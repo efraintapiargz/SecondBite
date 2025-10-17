@@ -1,0 +1,32 @@
+{
+  "name": "secondbite-backend",
+  "version": "1.0.0",
+  "description": "Backend para la aplicación SecondBite - Reducción de desperdicios alimenticios",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "init-db": "node database/init.js"
+  },
+  "keywords": [
+    "food-waste",
+    "sustainability",
+    "express",
+    "mysql"
+  ],
+  "author": "Christian Efrain Tapia Rodriguez, Ernesto Vega Velasco, Ulises Ramirez Tequianes",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.6.5",
+    "dotenv": "^16.3.1",
+    "cors": "^2.8.5",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "express-validator": "^7.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
