@@ -1,0 +1,17 @@
+/* Forzar scroll en React Native Web */
+body {
+  overflow: auto !important;
+  height: 100vh !important;
+}
+
+#root {
+  height: 100vh !important;
+  overflow: auto !important;
+}
+
+/* Asegurar que los ScrollViews funcionen */
+div[data-focusable="true"] {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  max-height: 100vh;
+}

@@ -8,7 +8,16 @@ class User {
       INSERT INTO users (email, password, full_name, phone, user_type, address, latitude, longitude)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    const [result] = await pool.execute(query, [email, password, full_name, phone, user_type, address, latitude, longitude]);
+    const [result] = await pool.execute(query, [
+      email, 
+      password, 
+      full_name, 
+      phone || null, 
+      user_type, 
+      address || null, 
+      latitude || null, 
+      longitude || null
+    ]);
     return result.insertId;
   }
 

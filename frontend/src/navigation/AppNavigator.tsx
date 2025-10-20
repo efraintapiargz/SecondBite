@@ -2,11 +2,14 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { RootStackParamList, ConsumerTabParamList, MerchantTabParamList } from '../types';
+import { CONFIG } from '../utils/config';
 
 // Screens
 import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
 import HomeScreen from '../screens/consumer/HomeScreen';
 import SearchScreen from '../screens/consumer/SearchScreen';
 import OrdersScreen from '../screens/consumer/OrdersScreen';
@@ -34,7 +37,7 @@ function ConsumerTabs() {
         component={HomeScreen}
         options={{
           title: 'Inicio',
-          tabBarIcon: ({ color }) => <span style={{ fontSize: 24 }}>🏠</span>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>🏠</Text>,
         }}
       />
       <ConsumerTab.Screen
@@ -42,7 +45,7 @@ function ConsumerTabs() {
         component={SearchScreen}
         options={{
           title: 'Buscar',
-          tabBarIcon: ({ color }) => <span style={{ fontSize: 24 }}>🔍</span>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>🔍</Text>,
         }}
       />
       <ConsumerTab.Screen
@@ -50,7 +53,7 @@ function ConsumerTabs() {
         component={OrdersScreen}
         options={{
           title: 'Pedidos',
-          tabBarIcon: ({ color }) => <span style={{ fontSize: 24 }}>📦</span>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>📦</Text>,
         }}
       />
       <ConsumerTab.Screen
@@ -58,7 +61,7 @@ function ConsumerTabs() {
         component={ProfileScreen}
         options={{
           title: 'Perfil',
-          tabBarIcon: ({ color }) => <span style={{ fontSize: 24 }}>👤</span>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>👤</Text>,
         }}
       />
     </ConsumerTab.Navigator>
@@ -78,7 +81,7 @@ function MerchantTabs() {
         component={DashboardScreen}
         options={{
           title: 'Dashboard',
-          tabBarIcon: ({ color }) => <span style={{ fontSize: 24 }}>📊</span>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>📊</Text>,
         }}
       />
       <MerchantTab.Screen
@@ -86,7 +89,7 @@ function MerchantTabs() {
         component={ProductsScreen}
         options={{
           title: 'Productos',
-          tabBarIcon: ({ color }) => <span style={{ fontSize: 24 }}>🛒</span>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>🛒</Text>,
         }}
       />
       <MerchantTab.Screen
@@ -94,7 +97,7 @@ function MerchantTabs() {
         component={MerchantOrdersScreen}
         options={{
           title: 'Pedidos',
-          tabBarIcon: ({ color }) => <span style={{ fontSize: 24 }}>📦</span>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>📦</Text>,
         }}
       />
       <MerchantTab.Screen
@@ -102,7 +105,7 @@ function MerchantTabs() {
         component={ProfileScreen}
         options={{
           title: 'Perfil',
-          tabBarIcon: ({ color }) => <span style={{ fontSize: 24 }}>👤</span>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>👤</Text>,
         }}
       />
     </MerchantTab.Navigator>
@@ -113,14 +116,22 @@ export default function AppNavigator() {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return null; // o un componente de carga
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={CONFIG.COLORS.primary} />
+        <Text style={styles.loadingText}>Cargando...</Text>
+      </View>
+    );
   }
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!user ? (
-          <Stack.Screen name="Login" component={LoginScreen} />
+          <>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+          </>
         ) : user.user_type === 'merchant' ? (
           <Stack.Screen name="MainTabs" component={MerchantTabs} />
         ) : (
@@ -130,3 +141,17 @@ export default function AppNavigator() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: CONFIG.COLORS.white,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: CONFIG.COLORS.textLight,
+  },
+});

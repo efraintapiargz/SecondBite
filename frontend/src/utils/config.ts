@@ -1,5 +1,7 @@
 // Configuración de la aplicación
-export const API_URL = 'http://localhost:3000/api';
+// NOTA: Usa tu IP local (no localhost) para probar en dispositivo físico
+// Encuentra tu IP con: ipconfig (Windows) o ifconfig (Mac/Linux)
+export const API_URL = 'http://192.168.100.22:3000/api';
 
 export const CONFIG = {
   API_URL,

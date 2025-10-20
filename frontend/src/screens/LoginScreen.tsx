@@ -6,8 +6,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
@@ -40,11 +38,13 @@ export default function LoginScreen({ navigation }: any) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+    <View style={styles.container}>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={true}
+        bounces={false}
+      >
         <View style={styles.content}>
           <Text style={styles.logo}>🍽️</Text>
           <Text style={styles.title}>SecondBite</Text>
@@ -93,7 +93,7 @@ export default function LoginScreen({ navigation }: any) {
           </View>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -101,12 +101,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: CONFIG.COLORS.white,
-  },
+    height: '100vh',
+  } as any,
+  scrollView: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  } as any,
   scrollContent: {
-    flexGrow: 1,
+    paddingVertical: 40,
   },
   content: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
