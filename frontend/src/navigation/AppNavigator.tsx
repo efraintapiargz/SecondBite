@@ -14,11 +14,15 @@ import HomeScreen from '../screens/consumer/HomeScreen';
 import SearchScreen from '../screens/consumer/SearchScreen';
 import OrdersScreen from '../screens/consumer/OrdersScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import ProductDetailScreen from '../screens/ProductDetailScreen';
+import CartScreen from '../screens/consumer/CartScreen';
+import CheckoutScreen from '../screens/consumer/CheckoutScreen';
 
 // Merchant Screens
 import DashboardScreen from '../screens/merchant/DashboardScreen';
 import ProductsScreen from '../screens/merchant/ProductsScreen';
 import MerchantOrdersScreen from '../screens/merchant/MerchantOrdersScreen';
+import ProductFormScreen from '../screens/merchant/ProductFormScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 const ConsumerTab = createBottomTabNavigator<ConsumerTabParamList>();
@@ -28,8 +32,18 @@ function ConsumerTabs() {
   return (
     <ConsumerTab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: '#4CAF50',
-        tabBarInactiveTintColor: '#757575',
+        tabBarActiveTintColor: '#2E7D32',
+        tabBarInactiveTintColor: '#9E9E9E',
+        tabBarStyle: {
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
+        },
+        headerShown: false, // Mantener headers personalizados
       }}
     >
       <ConsumerTab.Screen
@@ -37,7 +51,7 @@ function ConsumerTabs() {
         component={HomeScreen}
         options={{
           title: 'Inicio',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>🏠</Text>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>🏠</Text>,
         }}
       />
       <ConsumerTab.Screen
@@ -45,7 +59,7 @@ function ConsumerTabs() {
         component={SearchScreen}
         options={{
           title: 'Buscar',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>🔍</Text>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>🔍</Text>,
         }}
       />
       <ConsumerTab.Screen
@@ -53,7 +67,7 @@ function ConsumerTabs() {
         component={OrdersScreen}
         options={{
           title: 'Pedidos',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>📦</Text>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>📦</Text>,
         }}
       />
       <ConsumerTab.Screen
@@ -61,7 +75,7 @@ function ConsumerTabs() {
         component={ProfileScreen}
         options={{
           title: 'Perfil',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>👤</Text>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>👤</Text>,
         }}
       />
     </ConsumerTab.Navigator>
@@ -72,8 +86,18 @@ function MerchantTabs() {
   return (
     <MerchantTab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: '#4CAF50',
-        tabBarInactiveTintColor: '#757575',
+        tabBarActiveTintColor: '#2E7D32',
+        tabBarInactiveTintColor: '#9E9E9E',
+        tabBarStyle: {
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
+        },
+        headerShown: false, // Mantener headers personalizados
       }}
     >
       <MerchantTab.Screen
@@ -81,7 +105,7 @@ function MerchantTabs() {
         component={DashboardScreen}
         options={{
           title: 'Dashboard',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>📊</Text>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>📊</Text>,
         }}
       />
       <MerchantTab.Screen
@@ -89,7 +113,7 @@ function MerchantTabs() {
         component={ProductsScreen}
         options={{
           title: 'Productos',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>🛒</Text>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>📦</Text>,
         }}
       />
       <MerchantTab.Screen
@@ -97,7 +121,7 @@ function MerchantTabs() {
         component={MerchantOrdersScreen}
         options={{
           title: 'Pedidos',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>📦</Text>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>🛍️</Text>,
         }}
       />
       <MerchantTab.Screen
@@ -105,7 +129,7 @@ function MerchantTabs() {
         component={ProfileScreen}
         options={{
           title: 'Perfil',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>👤</Text>,
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>👤</Text>,
         }}
       />
     </MerchantTab.Navigator>
@@ -133,9 +157,38 @@ export default function AppNavigator() {
             <Stack.Screen name="Register" component={RegisterScreen} />
           </>
         ) : user.user_type === 'merchant' ? (
-          <Stack.Screen name="MainTabs" component={MerchantTabs} />
+          <>
+            <Stack.Screen name="MainTabs" component={MerchantTabs} />
+            <Stack.Screen 
+              name="ProductForm" 
+              component={ProductFormScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen 
+              name="ProductDetail" 
+              component={ProductDetailScreen}
+              options={{ headerShown: false }}
+            />
+          </>
         ) : (
-          <Stack.Screen name="MainTabs" component={ConsumerTabs} />
+          <>
+            <Stack.Screen name="MainTabs" component={ConsumerTabs} />
+            <Stack.Screen 
+              name="ProductDetail" 
+              component={ProductDetailScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen 
+              name="Cart" 
+              component={CartScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen 
+              name="Checkout" 
+              component={CheckoutScreen}
+              options={{ headerShown: false }}
+            />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>

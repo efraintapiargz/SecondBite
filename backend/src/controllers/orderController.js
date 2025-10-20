@@ -4,11 +4,22 @@ const Product = require('../models/Product');
 // Crear pedido
 exports.createOrder = async (req, res) => {
   try {
+    console.log('📦 Creating order - Request body:', JSON.stringify(req.body, null, 2));
+    console.log('👤 User ID:', req.userId);
+    
     const { merchant_id, payment_method, pickup_time, notes, items } = req.body;
 
     if (!items || items.length === 0) {
+      console.error('❌ No items provided');
       return res.status(400).json({ error: 'El pedido debe tener al menos un producto' });
     }
+
+    if (!merchant_id) {
+      console.error('❌ No merchant_id provided');
+      return res.status(400).json({ error: 'Se requiere el ID del establecimiento' });
+    }
+    
+    console.log('✅ Basic validation passed');
 
     // Calcular total y validar productos
     let total_amount = 0;
@@ -21,6 +32,13 @@ exports.createOrder = async (req, res) => {
         return res.status(404).json({ error: `Producto ${item.product_id} no encontrado` });
       }
 
+      // Validar que todos los productos sean del mismo merchant
+      if (product.merchant_id !== merchant_id) {
+        return res.status(400).json({ 
+          error: `Solo puedes hacer pedidos de un mismo establecimiento` 
+        });
+      }
+
       if (product.status !== 'available') {
         return res.status(400).json({ error: `Producto ${product.name} no está disponible` });
       }
@@ -31,35 +49,54 @@ exports.createOrder = async (req, res) => {
         });
       }
 
-      const subtotal = product.discounted_price * item.quantity;
+      const price = product.discounted_price || product.original_price;
+      const subtotal = price * item.quantity;
       total_amount += subtotal;
 
       validatedItems.push({
         product_id: product.id,
         quantity: item.quantity,
-        unit_price: product.discounted_price,
+        unit_price: price,
         subtotal: subtotal
       });
     }
+
+    // Validar método de pago (solo pago en tienda)
+    const validPaymentMethod = payment_method === 'store' ? 'store' : 'cash';
+    
+    console.log('💾 Creating order with data:', {
+      consumer_id: req.userId,
+      merchant_id,
+      total_amount,
+      payment_method: validPaymentMethod,
+      pickup_time,
+      notes: notes || null,
+      items_count: validatedItems.length
+    });
 
     // Crear orden
     const orderId = await Order.create({
       consumer_id: req.userId,
       merchant_id,
       total_amount,
-      payment_method: payment_method || 'cash',
+      payment_method: validPaymentMethod,
       pickup_time,
-      notes,
+      notes: notes || null, // Convertir undefined a null
       items: validatedItems
     });
+    
+    console.log('✅ Order created with ID:', orderId);
 
     const order = await Order.findById(orderId);
+    console.log('✅ Order retrieved successfully');
+    
     res.status(201).json({
-      message: 'Pedido creado exitosamente',
+      message: 'Pedido creado exitosamente. Pago en tienda al recoger.',
       order
     });
   } catch (error) {
-    console.error('Error al crear pedido:', error);
+    console.error('❌ Error al crear pedido:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({ error: 'Error al crear pedido', details: error.message });
   }
 };

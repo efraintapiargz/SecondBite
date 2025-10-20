@@ -8,14 +8,19 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { productService } from '../../services/productService';
 import { Product } from '../../types';
 import { CONFIG } from '../../utils/config';
+import { useCart } from '../../context/CartContext';
+import { formatPrice } from '../../utils/formatters';
 
 export default function HomeScreen() {
+  const navigation = useNavigation<any>();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const { getCartItemsCount } = useCart();
 
   const loadProducts = async () => {
     try {
@@ -41,26 +46,57 @@ export default function HomeScreen() {
 
   const renderProduct = ({ item }: { item: Product }) => {
     const discount = item.discount_percentage;
+    const daysUntilExpiry = Math.ceil((new Date(item.expiry_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+    
+    const handlePress = () => {
+      const parent = navigation.getParent();
+      if (parent) {
+        parent.navigate('ProductDetail', { productId: item.id });
+      }
+    };
     
     return (
-      <TouchableOpacity style={styles.productCard}>
-        <View style={styles.productInfo}>
-          <Text style={styles.productName}>{item.name}</Text>
-          <Text style={styles.merchantName}>🏪 {item.business_name}</Text>
-          <Text style={styles.description} numberOfLines={2}>
-            {item.description}
-          </Text>
-          <View style={styles.priceContainer}>
-            <Text style={styles.originalPrice}>${item.original_price}</Text>
-            <Text style={styles.discountPrice}>${item.discounted_price}</Text>
-            <View style={styles.discountBadge}>
-              <Text style={styles.discountText}>-{discount}%</Text>
+      <TouchableOpacity 
+        style={styles.productCard}
+        onPress={handlePress}
+        activeOpacity={0.7}
+      >
+        <View style={styles.cardContent}>
+          <View style={styles.productHeader}>
+            <View style={styles.productTitleContainer}>
+              <Text style={styles.productName} numberOfLines={1}>{item.name}</Text>
+              {discount > 0 && (
+                <View style={styles.discountBadge}>
+                  <Text style={styles.discountText}>{discount}% OFF</Text>
+                </View>
+              )}
+            </View>
+            <Text style={styles.merchantName}>{item.business_name}</Text>
+          </View>
+
+          {item.description && (
+            <Text style={styles.description} numberOfLines={2}>
+              {item.description}
+            </Text>
+          )}
+
+          <View style={styles.productFooter}>
+            <View style={styles.priceContainer}>
+              {discount > 0 && (
+                <Text style={styles.originalPrice}>{formatPrice(Number(item.original_price))}</Text>
+              )}
+              <Text style={styles.discountPrice}>{formatPrice(Number(item.discounted_price))}</Text>
+            </View>
+            
+            <View style={styles.metaInfo}>
+              <Text style={styles.stockText}>{item.quantity_available} disponibles</Text>
+              {daysUntilExpiry <= 2 && (
+                <View style={styles.urgentBadge}>
+                  <Text style={styles.urgentText}>¡Expira pronto!</Text>
+                </View>
+              )}
             </View>
           </View>
-          <Text style={styles.quantity}>Disponibles: {item.quantity_available}</Text>
-          <Text style={styles.expiry}>
-            ⏰ Vence: {new Date(item.expiry_date).toLocaleDateString()}
-          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -78,8 +114,26 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>🍽️ SecondBite</Text>
-        <Text style={styles.headerSubtitle}>Productos cerca de ti</Text>
+        <View>
+          <Text style={styles.headerTitle}>SecondBite</Text>
+          <Text style={styles.headerSubtitle}>Productos disponibles cerca de ti</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.cartButton}
+          onPress={() => {
+            const parent = navigation.getParent();
+            if (parent) {
+              parent.navigate('Cart');
+            }
+          }}
+        >
+          <Text style={styles.cartIcon}>🛒</Text>
+          {getCartItemsCount() > 0 && (
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>{getCartItemsCount()}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
 
       <FlatList
@@ -97,10 +151,9 @@ export default function HomeScreen() {
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>😔</Text>
             <Text style={styles.emptyTitle}>No hay productos disponibles</Text>
             <Text style={styles.emptySubtitle}>
-              Intenta más tarde o cambia tu ubicación
+              Vuelve a intentarlo más tarde
             </Text>
           </View>
         }
@@ -112,29 +165,73 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CONFIG.COLORS.light,
+    backgroundColor: CONFIG.COLORS.background,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: CONFIG.COLORS.light,
+    backgroundColor: CONFIG.COLORS.background,
   },
   header: {
     backgroundColor: CONFIG.COLORS.primary,
     padding: 20,
     paddingTop: 40,
+    paddingBottom: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 26,
+    fontWeight: '700',
     color: CONFIG.COLORS.white,
-    marginBottom: 5,
+    marginBottom: 4,
+    letterSpacing: 0.5,
   },
   headerSubtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: CONFIG.COLORS.white,
-    opacity: 0.9,
+    opacity: 0.85,
+    fontWeight: '400',
+  },
+  cartButton: {
+    position: 'relative',
+    width: 48,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  cartIcon: {
+    fontSize: 22,
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: CONFIG.COLORS.danger,
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 6,
+    borderWidth: 2,
+    borderColor: CONFIG.COLORS.primary,
+  },
+  cartBadgeText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: '700',
   },
   loadingText: {
     marginTop: 10,
@@ -142,95 +239,122 @@ const styles = StyleSheet.create({
     color: CONFIG.COLORS.textLight,
   },
   listContainer: {
-    padding: 15,
+    padding: 16,
     flexGrow: 1,
   },
   productCard: {
-    backgroundColor: CONFIG.COLORS.white,
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 15,
-    elevation: 2,
+    backgroundColor: CONFIG.COLORS.cardBackground,
+    borderRadius: 16,
+    marginBottom: 16,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.05)',
   },
-  productInfo: {
-    flex: 1,
+  cardContent: {
+    padding: 16,
+  },
+  productHeader: {
+    marginBottom: 8,
+  },
+  productTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 6,
   },
   productName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: CONFIG.COLORS.text,
-    marginBottom: 5,
+    flex: 1,
+    marginRight: 8,
   },
   merchantName: {
-    fontSize: 14,
+    fontSize: 13,
     color: CONFIG.COLORS.textLight,
-    marginBottom: 8,
+    fontWeight: '500',
   },
   description: {
     fontSize: 14,
     color: CONFIG.COLORS.textLight,
-    marginBottom: 10,
+    marginBottom: 12,
+    lineHeight: 20,
+  },
+  productFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
   },
   priceContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
+    alignItems: 'baseline',
   },
   originalPrice: {
-    fontSize: 16,
+    fontSize: 14,
     color: CONFIG.COLORS.textLight,
     textDecorationLine: 'line-through',
-    marginRight: 10,
+    marginRight: 8,
   },
   discountPrice: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: CONFIG.COLORS.primary,
-    marginRight: 10,
   },
   discountBadge: {
     backgroundColor: CONFIG.COLORS.danger,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 6,
   },
   discountText: {
     color: CONFIG.COLORS.white,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  metaInfo: {
+    alignItems: 'flex-end',
+  },
+  stockText: {
     fontSize: 12,
-    fontWeight: 'bold',
-  },
-  quantity: {
-    fontSize: 14,
     color: CONFIG.COLORS.textLight,
-    marginBottom: 5,
+    marginBottom: 4,
   },
-  expiry: {
-    fontSize: 14,
+  urgentBadge: {
+    backgroundColor: '#FFF3E0',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: CONFIG.COLORS.warning,
+  },
+  urgentText: {
     color: CONFIG.COLORS.warning,
-    fontWeight: '500',
+    fontSize: 11,
+    fontWeight: '600',
   },
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 60,
-  },
-  emptyText: {
-    fontSize: 64,
-    marginBottom: 20,
+    paddingVertical: 80,
+    paddingHorizontal: 40,
   },
   emptyTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '600',
     color: CONFIG.COLORS.text,
-    marginBottom: 10,
+    marginBottom: 8,
+    textAlign: 'center',
   },
   emptySubtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: CONFIG.COLORS.textLight,
     textAlign: 'center',
+    lineHeight: 20,
   },
 });

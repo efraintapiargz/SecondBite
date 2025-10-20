@@ -160,6 +160,9 @@ export type RootStackParamList = {
   Register: undefined;
   MainTabs: undefined;
   ProductDetail: { productId: number };
+  ProductForm: { product?: Product };
+  Cart: undefined;
+  Checkout: undefined;
   MerchantDetail: { merchantId: number };
   OrderDetail: { orderId: number };
   CreateProduct: undefined;

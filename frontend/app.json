@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "primaryColor": "#4CAF50",
     "splash": {
       "resizeMode": "contain",
       "backgroundColor": "#4CAF50"
@@ -30,7 +31,8 @@
       ]
     },
     "web": {
-      "bundler": "metro"
+      "bundler": "metro",
+      "lang": "es"
     },
     "plugins": [
       [

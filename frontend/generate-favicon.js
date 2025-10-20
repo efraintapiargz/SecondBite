@@ -1,0 +1,36 @@
+const fs = require('fs');
+const path = require('path');
+
+// Crear un favicon simple en base64 (un ícono verde simple)
+// Este es un PNG de 48x48 píxeles con fondo verde y el emoji de comida
+const favicon48x48Base64 = `
+iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
+AAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAOCSURB
+VGiB7ZpNaBNBFIC/2WySbJqkadI0aamtP1V/8KBiQQQPCh48eBAvInjy4EkEL4IgePDgQRAELx4E
+wYMXL4IgCIIgCB4EQRCkWqQq/tS2Sduk2STZzXpomjRN3M1sNpvdwAw7s2/ee/NlMvNmdgWEEEII
+IYQQQgghhBBCCCGEEEIIIYT4D5AaHaBWGIaBqqqoqoqiKMiyjCzLyLKMoiiUy2XK5TKlUolisUix
+WKRQKFAoFMjn8+TzeXK5HLlcjmw2SzabJZPJkE6nSafTpFIpUqkUqVQKl8uF2+3G7XbjcrmoEARB
+cDgcOBwO7HY7NpsNm82GzWbDarVitVqxWCxYLBbMZjNmsxmTyYTRaMRoNGIwGDAYDOh0OnQ6HVqt
+Fq1Wi0ajQaPRoNFoUBQFRVFQVRVVVZFlGVmWkWUZWZaRZRlZlpFlGUVRUBQFWZZRFAVZllEUBVmW
+URQFWZaRZRlZlpFlGVmWkWUZWZaRZRlZlpFlGVmWURQFRVFQFAVZlpFlGVmWkWUZWZZRFAVFUVAU
+BUVRUBQFRVFQFAVFUZBlGVmWkWUZWZaRZRlZlpFlGVmWkWUZWZaRZRlZlpFlGVmWkWUZWZaRZRlZ
+lpFlGVmWkWUZWZaRZRlFUVAUBUVRUBQFRVFQFAVFUVAUBUVRUBQFRVFQFAVFUVAUBUVRUBQFRVFQ
+FAVFUVAUBUVRUBQFRVFQFAVFUVAUBUVRUBQFRVFQFAVFUVAUBUVRUBQFRVFQFAVFUVAUBUVRUBQF
+RVFQFAVFUVAUBUVR0Ol06HQ6dDodOp0OnU6HTqdDp9Oh0+nQ6XTodDp0Oh06nQ6dTodOp0On06HT
+6dDpdOh0OnQ6HTqdDp1Oh06nQ6fTodPp0Ol06HQ6dDodOp0OnU6HTqdDp9Oh0+nQ6XTodDp0Oh06
+nQ6dTodOp0On06HT6dDpdOh0OnQ6HTqdDp1Oh06nQ6fTodPp0Ol06HQ6dDodOp0OnU6HTqdDp9Oh
+0+nQ6XTodDp0Oh06nQ6dTodOp0On06HT6dDpdOh0OnQ6HTqdDp1Oh06nQ6fTodPp0Ol06HQ6dDod
+Op0OnU6HTqdDp9Oh0+nQ6XTodDp0Oh06nQ6dTodOp0On06HT6dDpdOh0OnQ6HTqdDp1Oh06nQ6fT
+odPp0Ol0/wA7EhBCCCGEEEIIIYQQQgghhBBCCCGEEKIh+QXgxVvWCqkPqwAAAABJRU5ErkJggg==
+`;
+
+const faviconPath = path.join(__dirname, 'assets', 'favicon.png');
+
+// Limpiar el base64 y convertir a buffer
+const base64Data = favicon48x48Base64.replace(/\s/g, '');
+const buffer = Buffer.from(base64Data, 'base64');
+
+// Escribir el archivo
+fs.writeFileSync(faviconPath, buffer);
+
+console.log('✅ Favicon creado exitosamente en:', faviconPath);

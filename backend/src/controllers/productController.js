@@ -66,10 +66,16 @@ exports.getNearbyProducts = async (req, res) => {
 // Crear producto (solo comerciantes)
 exports.createProduct = async (req, res) => {
   try {
+    console.log('➕ createProduct called - User ID:', req.userId);
+    console.log('📦 Product data:', req.body);
+    
     const Merchant = require('../models/Merchant');
     const merchant = await Merchant.findByUserId(req.userId);
     
+    console.log('🏪 Merchant found:', merchant ? `ID: ${merchant.id}, Name: ${merchant.business_name}` : 'NOT FOUND');
+    
     if (!merchant) {
+      console.error('❌ No merchant found for user ID:', req.userId);
       return res.status(403).json({ error: 'No tienes permisos de comerciante' });
     }
 
@@ -78,6 +84,7 @@ exports.createProduct = async (req, res) => {
       quantity_available, expiry_date, image_url
     } = req.body;
 
+    console.log('💾 Creating product with merchant ID:', merchant.id);
     const productId = await Product.create({
       merchant_id: merchant.id,
       name,
@@ -90,13 +97,15 @@ exports.createProduct = async (req, res) => {
       image_url
     });
 
+    console.log('✅ Product created with ID:', productId);
     const product = await Product.findById(productId);
     res.status(201).json({
       message: 'Producto creado exitosamente',
       product
     });
   } catch (error) {
-    console.error('Error al crear producto:', error);
+    console.error('❌ Error al crear producto:', error);
+    console.error('Stack:', error.stack);
     res.status(500).json({ error: 'Error al crear producto', details: error.message });
   }
 };
@@ -178,19 +187,26 @@ exports.deleteProduct = async (req, res) => {
 // Obtener productos del comerciante actual
 exports.getMyProducts = async (req, res) => {
   try {
+    console.log('📦 getMyProducts called - User ID:', req.userId);
     const Merchant = require('../models/Merchant');
     const merchant = await Merchant.findByUserId(req.userId);
     
+    console.log('🏪 Merchant found:', merchant ? `ID: ${merchant.id}, Name: ${merchant.business_name}` : 'NOT FOUND');
+    
     if (!merchant) {
+      console.error('❌ No merchant found for user ID:', req.userId);
       return res.status(403).json({ error: 'No tienes permisos de comerciante' });
     }
 
     const includeAll = req.query.include_all === 'true';
+    console.log('📋 Getting products for merchant ID:', merchant.id, 'includeAll:', includeAll);
     const products = await Product.getByMerchant(merchant.id, includeAll);
     
+    console.log('✅ Products found:', products.length);
     res.json({ products, count: products.length });
   } catch (error) {
-    console.error('Error al obtener productos:', error);
+    console.error('❌ Error al obtener productos:', error);
+    console.error('Stack:', error.stack);
     res.status(500).json({ error: 'Error al obtener productos', details: error.message });
   }
 };

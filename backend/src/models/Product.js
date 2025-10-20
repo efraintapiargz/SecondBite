@@ -17,9 +17,16 @@ class Product {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const [result] = await pool.execute(query, [
-      merchant_id, name, description, category, original_price, 
-      discounted_price, discount_percentage, quantity_available, 
-      expiry_date, image_url
+      merchant_id, 
+      name, 
+      description || null, 
+      category, 
+      original_price, 
+      discounted_price, 
+      discount_percentage, 
+      quantity_available, 
+      expiry_date, 
+      image_url || null  // Convertir undefined a null
     ]);
     return result.insertId;
   }

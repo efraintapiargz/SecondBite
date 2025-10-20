@@ -30,7 +30,15 @@ class Merchant {
     `;
     const [rows] = await pool.execute(query, [user_id]);
     if (rows[0] && rows[0].business_hours) {
-      rows[0].business_hours = JSON.parse(rows[0].business_hours);
+      // Solo parsear si es un string, si ya es objeto dejarlo como está
+      if (typeof rows[0].business_hours === 'string') {
+        try {
+          rows[0].business_hours = JSON.parse(rows[0].business_hours);
+        } catch (e) {
+          console.error('Error parsing business_hours:', e);
+          rows[0].business_hours = {};
+        }
+      }
     }
     return rows[0];
   }

@@ -1,325 +1,647 @@
-# SecondBite 🍽️♻️
+# SecondBite 🍽️♻️# SecondBite 🍽️♻️
 
-> Aplicación móvil para reducir el desperdicio alimentario conectando comercios con consumidores
 
-[![Version](https://img.shields.io/badge/version-1.0.0-green)](https://github.com/efraintapiargz/SecondBite)
-[![React Native](https://img.shields.io/badge/React%20Native-0.74-blue)](https://reactnative.dev/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0-orange)](https://www.mysql.com/)
+
+> Plataforma para reducir el desperdicio alimentario conectando comercios con consumidores> Aplicación móvil para reducir el desperdicio alimentario conectando comercios con consumidores
+
+
+
+[![Version](https://img.shields.io/badge/version-1.0.0-green)](https://github.com/efraintapiargz/SecondBite)[![Version](https://img.shields.io/badge/version-1.0.0-green)](https://github.com/efraintapiargz/SecondBite)
+
+[![React Native](https://img.shields.io/badge/React%20Native-0.74-blue)](https://reactnative.dev/)[![React Native](https://img.shields.io/badge/React%20Native-0.74-blue)](https://reactnative.dev/)
+
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/)[![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/)
+
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-orange)](https://www.mysql.com/)[![MySQL](https://img.shields.io/badge/MySQL-8.0-orange)](https://www.mysql.com/)
+
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+**Universidad de Colima** | Ingeniería de Software | Octubre 2025
 
 **Universidad de Colima** | Ingeniería de Software | Octubre 2025
 
 ---
 
-## 📋 Tabla de Contenidos
-
-- [Descripción](#-descripción)
-- [Inicio Rápido](#-inicio-rápido)
-- [Tecnologías](#-tecnologías)
-- [Configuración](#-configuración)
-  - [1. MySQL](#1-configurar-mysql)
-  - [2. Backend](#2-configurar-backend)
-  - [3. Frontend](#3-configurar-frontend)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [API REST](#-api-rest)
-- [Testing](#-testing)
-- [Contribuir](#-contribuir)
-
 ---
 
 ## 📖 Descripción
 
+## 📋 Tabla de Contenidos
+
 **SecondBite** conecta comercios que tienen productos alimenticios próximos a caducar con consumidores que buscan ofertas, reduciendo el desperdicio y promoviendo la sostenibilidad.
 
-### Características Principales
+- [Descripción](#-descripción)
 
-**Para Consumidores:**
-- 🔍 Buscar productos con descuento por proximidad
-- 📍 Geolocalización de comercios cercanos
-- 🛒 Sistema de pedidos
-- ⭐ Reseñas y calificaciones
-- ❤️ Comercios favoritos
+### ✨ Características Implementadas- [Inicio Rápido](#-inicio-rápido)
+
+- [Tecnologías](#-tecnologías)
+
+**Para Consumidores:**- [Configuración](#-configuración)
+
+- ✅ Registro e inicio de sesión  - [1. MySQL](#1-configurar-mysql)
+
+- ✅ Catálogo de productos con descuentos  - [2. Backend](#2-configurar-backend)
+
+- ✅ Carrito de compras (restricción: un solo comercio por pedido)  - [3. Frontend](#3-configurar-frontend)
+
+- ✅ Checkout simplificado (pago solo en tienda)- [Estructura del Proyecto](#-estructura-del-proyecto)
+
+- ✅ Historial de pedidos- [API REST](#-api-rest)
+
+- ✅ Vista de detalles de productos- [Testing](#-testing)
+
+- [Contribuir](#-contribuir)
 
 **Para Comerciantes:**
+
+- ✅ Registro e inicio de sesión---
+
+- ✅ Gestión de productos (crear, editar, eliminar)
+
+- ✅ Vista de pedidos recibidos## 📖 Descripción
+
+- ✅ Actualización de estados de pedidos
+
+- ✅ Dashboard básico**SecondBite** conecta comercios que tienen productos alimenticios próximos a caducar con consumidores que buscan ofertas, reduciendo el desperdicio y promoviendo la sostenibilidad.
+
+
+
+### 🎯 Alineación ODS### Características Principales
+
+- **ODS 2**: Hambre Cero
+
+- **ODS 12**: Producción y Consumo Responsables**Para Consumidores:**
+
+- **ODS 13**: Acción por el Clima- 🔍 Buscar productos con descuento por proximidad
+
+- 📍 Geolocalización de comercios cercanos
+
+---- 🛒 Sistema de pedidos
+
+- ⭐ Reseñas y calificaciones
+
+## 🚀 Inicio Rápido- ❤️ Comercios favoritos
+
+
+
+### Requisitos Previos**Para Comerciantes:**
+
 - 📦 Gestión de productos e inventario
-- 💰 Control de precios y descuentos
-- 📊 Dashboard con estadísticas
-- 🔔 Sistema de notificaciones
+
+- [Node.js](https://nodejs.org/) 18 o superior- 💰 Control de precios y descuentos
+
+- [MySQL](https://www.mysql.com/) 8.0 o superior- 📊 Dashboard con estadísticas
+
+- [Git](https://git-scm.com/)- 🔔 Sistema de notificaciones
+
 - 📈 Reportes de ventas
 
+### Instalación
+
 ### Alineación ODS (Objetivos de Desarrollo Sostenible)
-- **ODS 2**: Hambre Cero
-- **ODS 12**: Producción y Consumo Responsables
-- **ODS 13**: Acción por el Clima
+
+```bash- **ODS 2**: Hambre Cero
+
+# 1. Clonar el repositorio- **ODS 12**: Producción y Consumo Responsables
+
+git clone https://github.com/efraintapiargz/SecondBite.git- **ODS 13**: Acción por el Clima
+
+cd SecondBite
 
 ---
 
-## 🚀 Inicio Rápido
+# 2. Configurar base de datos
 
-### Requisitos Previos
+# Ver sección "Configuración de MySQL" más abajo## 🚀 Inicio Rápido
 
-- [Node.js](https://nodejs.org/) 18 o superior
+
+
+# 3. Instalar dependencias del backend### Requisitos Previos
+
+cd backend
+
+npm install- [Node.js](https://nodejs.org/) 18 o superior
+
 - [MySQL](https://www.mysql.com/) 8.0 o superior
-- [Git](https://git-scm.com/)
-- [Expo Go](https://expo.dev/client) (app móvil para testing)
+
+# 4. Configurar variables de entorno- [Git](https://git-scm.com/)
+
+cp .env.example .env- [Expo Go](https://expo.dev/client) (app móvil para testing)
+
+# Editar .env con tus credenciales de MySQL
 
 ### Instalación Rápida
 
-```bash
+# 5. Iniciar backend
+
+npm run dev```bash
+
 # 1. Clonar el repositorio
-git clone https://github.com/efraintapiargz/SecondBite.git
-cd SecondBite
+
+# 6. En otra terminal, instalar dependencias del frontendgit clone https://github.com/efraintapiargz/SecondBite.git
+
+cd ../frontendcd SecondBite
+
+npm install
 
 # 2. Instalar dependencias
-cd backend && npm install
-cd ../frontend && npm install
+
+# 7. Iniciar frontendcd backend && npm install
+
+npm startcd ../frontend && npm install
+
+```
 
 # 3. Configurar MySQL (ver sección de configuración abajo)
 
+---
+
 # 4. Iniciar backend
-cd backend
+
+## 🛠️ Tecnologíascd backend
+
 npm run dev
 
-# 5. Iniciar frontend (en otra terminal)
-cd frontend
-npm start
-```
+### Backend
+
+- **Node.js** + **Express.js** - API REST# 5. Iniciar frontend (en otra terminal)
+
+- **MySQL2** - Base de datoscd frontend
+
+- **JWT** - Autenticaciónnpm start
+
+- **bcryptjs** - Hash de contraseñas```
+
+- **Nodemon** - Hot reload
 
 ---
 
-## 🛠️ Tecnologías
+### Frontend
 
-### Backend
-- **Node.js** + **Express.js** - Servidor API REST
-- **MySQL2** - Driver de base de datos con soporte para Promises
+- **React Native** + **Expo** v54## 🛠️ Tecnologías
+
+- **TypeScript** - Type safety
+
+- **Axios** - HTTP client### Backend
+
+- **AsyncStorage** - Persistencia local- **Node.js** + **Express.js** - Servidor API REST
+
+- **React Navigation** - Navegación- **MySQL2** - Driver de base de datos con soporte para Promises
+
 - **JWT** - Autenticación y autorización
-- **bcryptjs** - Hash de contraseñas
+
+---- **bcryptjs** - Hash de contraseñas
+
 - **Multer** - Manejo de archivos
 
+## ⚙️ Configuración
+
 ### Frontend
-- **React Native** 0.74 - Framework móvil
+
+### 1. Configurar MySQL- **React Native** 0.74 - Framework móvil
+
 - **Expo** 51 - Toolchain de desarrollo
-- **TypeScript** - Tipado estático
-- **React Navigation** 6 - Navegación
-- **Axios** - Cliente HTTP
+
+```sql- **TypeScript** - Tipado estático
+
+-- Crear base de datos- **React Navigation** 6 - Navegación
+
+CREATE DATABASE secondbite_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;- **Axios** - Cliente HTTP
+
 - **AsyncStorage** - Almacenamiento local
 
-### Base de Datos
-- **MySQL** 8.0 - Base de datos relacional
-- 8 tablas: users, merchants, products, orders, order_items, reviews, favorites, notifications
+-- Ejecutar script de inicialización
 
----
+USE secondbite_db;### Base de Datos
 
-## 🚀 Características Principales
+SOURCE backend/database/init.sql;- **MySQL** 8.0 - Base de datos relacional
 
-### Para Consumidores 👥
-- ✅ Registro y autenticación de usuarios
-- ✅ Búsqueda de productos próximos a caducar con descuentos
-- ✅ Geolocalización para encontrar productos cercanos
+```- 8 tablas: users, merchants, products, orders, order_items, reviews, favorites, notifications
+
+
+
+### 2. Configurar Backend---
+
+
+
+Crear archivo `.env` en `/backend`:## 🚀 Características Principales
+
+
+
+```env### Para Consumidores 👥
+
+# Servidor- ✅ Registro y autenticación de usuarios
+
+PORT=3000- ✅ Búsqueda de productos próximos a caducar con descuentos
+
+NODE_ENV=development- ✅ Geolocalización para encontrar productos cercanos
+
 - ✅ Sistema de pedidos y reservas
-- ✅ Historial de compras
-- ✅ Perfil de usuario personalizado
 
-### Para Comerciantes 🏪
-- ✅ Registro como comercio
-- ✅ Gestión completa de productos (CRUD)
+# Base de datos- ✅ Historial de compras
+
+DB_HOST=localhost- ✅ Perfil de usuario personalizado
+
+DB_USER=root
+
+DB_PASSWORD=tu_password_mysql### Para Comerciantes 🏪
+
+DB_NAME=secondbite_db- ✅ Registro como comercio
+
+DB_PORT=3306- ✅ Gestión completa de productos (CRUD)
+
 - ✅ Dashboard con estadísticas de ventas
-- ✅ Gestión de pedidos
-- ✅ Perfil de negocio
 
-### Características Técnicas ⚙️
+# JWT- ✅ Gestión de pedidos
+
+JWT_SECRET=tu_secret_key_segura_aqui- ✅ Perfil de negocio
+
+JWT_EXPIRES_IN=7d
+
+```### Características Técnicas ⚙️
+
 - 🔐 Autenticación JWT
-- 📍 Geolocalización con cálculo de distancia (Haversine)
+
+### 3. Configurar Frontend- 📍 Geolocalización con cálculo de distancia (Haversine)
+
 - 🔍 Búsqueda y filtrado avanzado de productos
-- 📊 Sistema de calificaciones y reseñas
+
+El archivo `frontend/src/utils/config.ts` ya está configurado para desarrollo:- 📊 Sistema de calificaciones y reseñas
+
 - 💾 Base de datos relacional MySQL
-- 🌐 API RESTful bien estructurada
 
----
+```typescript- 🌐 API RESTful bien estructurada
 
-## 📦 Tecnologías Utilizadas
+API_URL: 'http://192.168.100.22:3000/api'
 
-### Backend
+```---
+
+
+
+Cambia la IP si es necesario para tu red local.## 📦 Tecnologías Utilizadas
+
+
+
+---### Backend
+
 - **Node.js** 18+
-- **Express** 4.18 - Framework web
+
+## 📱 Usuarios de Prueba- **Express** 4.18 - Framework web
+
 - **MySQL2** 3.6 - Driver de MySQL
-- **JWT** (jsonwebtoken) - Autenticación
-- **bcryptjs** - Hash de contraseñas
-- **dotenv** - Variables de entorno
+
+### Consumidor- **JWT** (jsonwebtoken) - Autenticación
+
+- **Email:** `efrain@gmail.com`- **bcryptjs** - Hash de contraseñas
+
+- **Contraseña:** (la que registraste)- **dotenv** - Variables de entorno
+
 - **cors** - Control de acceso
-- **multer** - Manejo de archivos
 
-### Frontend
-- **React Native** 0.74 - Framework móvil
+### Comerciante- **multer** - Manejo de archivos
+
+- **Email:** `merchant@example.com`
+
+- **Contraseña:** Necesita configuración inicial### Frontend
+
+- **Nota:** Registra un nuevo comerciante o usa el script `backend/create-merchant-for-user.js`- **React Native** 0.74 - Framework móvil
+
 - **Expo** ~51.0 - Toolchain y SDK
-- **TypeScript** 5.1 - Tipado estático
+
+---- **TypeScript** 5.1 - Tipado estático
+
 - **React Navigation** 6.x - Navegación
-- **Axios** - Cliente HTTP
+
+## 🏗️ Estructura del Proyecto- **Axios** - Cliente HTTP
+
 - **AsyncStorage** - Almacenamiento local
-- **Expo Location** - Geolocalización
-- **React Native Maps** - Mapas
 
----
+```- **Expo Location** - Geolocalización
 
-## 📋 Requisitos Previos
+SecondBite/- **React Native Maps** - Mapas
 
-Antes de comenzar, asegúrate de tener instalado:
+├── backend/
 
-1. **Node.js** (v18 o superior)
-   ```bash
-   node --version
-   ```
+│   ├── src/---
 
-2. **MySQL** (v8.0 o superior)
-   ```bash
-   mysql --version
-   ```
+│   │   ├── config/          # Configuración de DB
 
-3. **npm** o **yarn**
-   ```bash
-   npm --version
-   ```
+│   │   ├── controllers/     # Lógica de negocio## 📋 Requisitos Previos
 
-4. **Expo CLI**
-   ```bash
-   npm install -g expo-cli
-   ```
+│   │   ├── middleware/      # Auth, validaciones
 
-5. **Expo Go** (en tu dispositivo móvil)
-   - [Android](https://play.google.com/store/apps/details?id=host.exp.exponent)
+│   │   ├── models/          # Modelos de datosAntes de comenzar, asegúrate de tener instalado:
+
+│   │   ├── routes/          # Rutas de API
+
+│   │   └── server.js        # Entrada principal1. **Node.js** (v18 o superior)
+
+│   ├── database/   ```bash
+
+│   │   └── init.sql         # Schema inicial   node --version
+
+│   └── package.json   ```
+
+├── frontend/
+
+│   ├── src/2. **MySQL** (v8.0 o superior)
+
+│   │   ├── components/      # Componentes reutilizables   ```bash
+
+│   │   ├── context/         # Context API (Cart, Auth)   mysql --version
+
+│   │   ├── navigation/      # Configuración de navegación   ```
+
+│   │   ├── screens/         # Pantallas de la app
+
+│   │   │   ├── consumer/    # Pantallas de consumidor3. **npm** o **yarn**
+
+│   │   │   └── merchant/    # Pantallas de comerciante   ```bash
+
+│   │   ├── services/        # API calls   npm --version
+
+│   │   ├── types/           # TypeScript types   ```
+
+│   │   └── utils/           # Utilidades
+
+│   └── package.json4. **Expo CLI**
+
+├── EJEMPLOS_API.md          # Ejemplos de uso de API   ```bash
+
+├── PROGRESS.md              # Estado del proyecto   npm install -g expo-cli
+
+├── QUICK_START.md           # Guía rápida   ```
+
+├── TROUBLESHOOTING.md       # Solución de problemas
+
+└── README.md                # Este archivo5. **Expo Go** (en tu dispositivo móvil)
+
+```   - [Android](https://play.google.com/store/apps/details?id=host.exp.exponent)
+
    - [iOS](https://apps.apple.com/app/expo-go/id982107779)
 
 ---
 
+---
+
+## 🔌 API Endpoints
+
 ## ⚙️ Configuración
 
-### 1. Configurar MySQL
+### Autenticación
 
-#### Instalación MySQL (si no lo tienes)
+- `POST /api/auth/register` - Registro de usuario### 1. Configurar MySQL
 
-**Windows:**
-```powershell
-# Descargar de: https://dev.mysql.com/downloads/installer/
-# Instalar MySQL Server y configurar contraseña root
-```
+- `POST /api/auth/login` - Inicio de sesión
 
-**macOS:**
+- `GET /api/auth/me` - Obtener usuario actual (🔒)#### Instalación MySQL (si no lo tienes)
+
+
+
+### Productos**Windows:**
+
+- `GET /api/products` - Listar productos```powershell
+
+- `GET /api/products/:id` - Detalle de producto# Descargar de: https://dev.mysql.com/downloads/installer/
+
+- `POST /api/products` - Crear producto (🔒 Merchant)# Instalar MySQL Server y configurar contraseña root
+
+- `PUT /api/products/:id` - Actualizar producto (🔒 Merchant)```
+
+- `DELETE /api/products/:id` - Eliminar producto (🔒 Merchant)
+
+- `GET /api/products/merchant/my-products` - Mis productos (🔒 Merchant)**macOS:**
+
 ```bash
-brew install mysql
-brew services start mysql
-mysql_secure_installation
-```
+
+### Pedidosbrew install mysql
+
+- `POST /api/orders` - Crear pedido (🔒 Consumer)brew services start mysql
+
+- `GET /api/orders/my-orders` - Mis pedidos (🔒 Consumer)mysql_secure_installation
+
+- `GET /api/orders/merchant/orders` - Pedidos recibidos (🔒 Merchant)```
+
+- `PUT /api/orders/:id/status` - Actualizar estado (🔒 Merchant)
 
 **Linux (Ubuntu):**
-```bash
-sudo apt update && sudo apt install mysql-server
-sudo systemctl start mysql
+
+### Comercios```bash
+
+- `GET /api/merchants` - Listar comerciossudo apt update && sudo apt install mysql-server
+
+- `GET /api/merchants/:id` - Detalle de comerciosudo systemctl start mysql
+
 sudo mysql_secure_installation
-```
 
-#### Crear la Base de Datos
+🔒 = Requiere autenticación (Bearer Token)```
 
-```bash
+
+
+---#### Crear la Base de Datos
+
+
+
+## 🚧 Estado del Proyecto```bash
+
 # Conectar a MySQL
-mysql -u root -p
 
-# Ejecutar el script de inicialización
-source backend/database/init.sql
+**MVP Completado: ~80%**mysql -u root -p
 
-# O desde la línea de comandos:
-mysql -u root -p < backend/database/init.sql
-```
 
-#### Verificar la Base de Datos
+
+### ✅ Completado# Ejecutar el script de inicialización
+
+- Sistema de autenticación completosource backend/database/init.sql
+
+- CRUD de productos
+
+- Carrito de compras con validaciones# O desde la línea de comandos:
+
+- Sistema de pedidos end-to-endmysql -u root -p < backend/database/init.sql
+
+- Vista de pedidos para consumidor y comerciante```
+
+- Gestión de estados de pedidos
+
+- Restricción de un solo merchant por pedido#### Verificar la Base de Datos
+
+- Pago únicamente en tienda
 
 ```sql
-USE secondbite_db;
-SHOW TABLES;
-SELECT * FROM users;
-```
 
-### 2. Configurar Backend
+### 🔨 PendienteUSE secondbite_db;
 
-```bash
+- Geolocalización y búsqueda por cercaníaSHOW TABLES;
+
+- Filtros avanzados y búsquedaSELECT * FROM users;
+
+- Sistema de notificaciones```
+
+- Dashboard con estadísticas
+
+- Favoritos### 2. Configurar Backend
+
+- Reseñas y calificaciones
+
+- Upload de imágenes```bash
+
 # Navegar al backend
-cd backend
 
-# Instalar dependencias
+Ver [PROGRESS.md](PROGRESS.md) para más detalles.cd backend
+
+
+
+---# Instalar dependencias
+
 npm install
 
+## 🐛 Solución de Problemas
+
 # Configurar variables de entorno
-cp .env.example .env
+
+Ver [TROUBLESHOOTING.md](TROUBLESHOOTING.md) para problemas comunes.cp .env.example .env
+
 # Editar .env con tus credenciales
-```
 
-**Contenido de `.env`:**
+### Problemas Frecuentes```
 
-```env
-PORT=3000
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=tu_password_mysql
-DB_NAME=secondbite_db
-JWT_SECRET=clave_secreta_muy_segura_cambiar_en_produccion
-JWT_EXPIRES_IN=7d
-CORS_ORIGIN=*
-```
 
-**Iniciar el servidor:**
+
+**Backend no inicia:****Contenido de `.env`:**
 
 ```bash
-npm run dev
+
+# Verificar que MySQL esté corriendo```env
+
+# Verificar credenciales en .envPORT=3000
+
+# Verificar que la base de datos existaDB_HOST=localhost
+
+```DB_PORT=3306
+
+DB_USER=root
+
+**Frontend no conecta al backend:**DB_PASSWORD=tu_password_mysql
+
+```bashDB_NAME=secondbite_db
+
+# Verificar IP en frontend/src/utils/config.tsJWT_SECRET=clave_secreta_muy_segura_cambiar_en_produccion
+
+# Verificar que backend esté corriendo en puerto 3000JWT_EXPIRES_IN=7d
+
+# Verificar firewallCORS_ORIGIN=*
+
+``````
+
+
+
+**Usuario merchant sin permisos:****Iniciar el servidor:**
+
+```bash
+
+# Ejecutar script para crear merchant```bash
+
+cd backendnpm run dev
+
+node create-merchant-for-user.js```
+
 ```
 
 Deberías ver: `✅ Conexión exitosa a MySQL`
 
+---
+
 ### 3. Configurar Frontend
 
+## 📚 Documentación Adicional
+
 ```bash
-# Navegar al frontend
-cd ../frontend
 
-# Instalar dependencias
+- [QUICK_START.md](QUICK_START.md) - Guía de inicio rápido# Navegar al frontend
+
+- [EJEMPLOS_API.md](EJEMPLOS_API.md) - Ejemplos de uso de APIcd ../frontend
+
+- [PROGRESS.md](PROGRESS.md) - Estado detallado del proyecto
+
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Solución de problemas# Instalar dependencias
+
 npm install
-
-# Iniciar Expo
-npm start
-```
-
-**Configurar IP para dispositivo físico:**
-
-Editar `frontend/src/utils/config.ts`:
-
-```typescript
-export const CONFIG = {
-  API_URL: 'http://192.168.X.X:3000/api', // Cambia por tu IP local
-  // ...
-};
-```
-
-**Escanear QR con Expo Go** en tu teléfono móvil.
 
 ---
 
-## 📁 Estructura del Proyecto
+# Iniciar Expo
+
+## 👥 Contribuirnpm start
 
 ```
-SecondBite/
-├── backend/
+
+Este es un proyecto académico de la Universidad de Colima. Las contribuciones son bienvenidas.
+
+**Configurar IP para dispositivo físico:**
+
+1. Fork el proyecto
+
+2. Crea una rama (`git checkout -b feature/AmazingFeature`)Editar `frontend/src/utils/config.ts`:
+
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+
+4. Push a la rama (`git push origin feature/AmazingFeature`)```typescript
+
+5. Abre un Pull Requestexport const CONFIG = {
+
+  API_URL: 'http://192.168.X.X:3000/api', // Cambia por tu IP local
+
+---  // ...
+
+};
+
+## 📄 Licencia```
+
+
+
+Este proyecto es de código abierto bajo la licencia MIT.**Escanear QR con Expo Go** en tu teléfono móvil.
+
+
+
+------
+
+
+
+## 👨‍💻 Autor## 📁 Estructura del Proyecto
+
+
+
+**Efrain Tapia**  ```
+
+Universidad de Colima - Ingeniería de Software  SecondBite/
+
+Octubre 2025├── backend/
+
 │   ├── database/
-│   │   └── init.sql           # Script de inicialización SQL
+
+---│   │   └── init.sql           # Script de inicialización SQL
+
 │   ├── src/
-│   │   ├── config/
+
+## 🙏 Agradecimientos│   │   ├── config/
+
 │   │   │   └── database.js    # Configuración MySQL
-│   │   ├── controllers/        # Lógica de negocio
-│   │   │   ├── authController.js
-│   │   │   ├── productController.js
+
+- Universidad de Colima│   │   ├── controllers/        # Lógica de negocio
+
+- Profesores del curso de Ingeniería de Software│   │   │   ├── authController.js
+
+- Comunidad de React Native y Node.js│   │   │   ├── productController.js
+
 │   │   │   ├── merchantController.js
-│   │   │   └── orderController.js
+
+---│   │   │   └── orderController.js
+
 │   │   ├── models/            # Acceso a datos
-│   │   │   ├── User.js
+
+**¿Preguntas o sugerencias?** Abre un issue en GitHub.│   │   │   ├── User.js
+
 │   │   │   ├── Merchant.js
 │   │   │   ├── Product.js
 │   │   │   └── Order.js

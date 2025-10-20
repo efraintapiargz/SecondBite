@@ -15,8 +15,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({
   origin: process.env.CORS_ORIGIN || '*'
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ charset: 'utf-8' }));
+app.use(express.urlencoded({ extended: true, charset: 'utf-8' }));
+
+// Configurar headers UTF-8 para todas las respuestas
+app.use((req, res, next) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  next();
+});
 
 // Logger middleware
 app.use((req, res, next) => {

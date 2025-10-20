@@ -8,18 +8,21 @@ export const CONFIG = {
   DEFAULT_RADIUS_KM: 10,
   MAX_IMAGE_SIZE: 5 * 1024 * 1024, // 5MB
   COLORS: {
-    primary: '#4CAF50',
-    secondary: '#FF9800',
-    success: '#4CAF50',
-    danger: '#F44336',
-    warning: '#FF9800',
-    info: '#2196F3',
+    primary: '#2E7D32',      // Verde oscuro más elegante
+    secondary: '#FF6F00',    // Naranja más sofisticado
+    success: '#388E3C',
+    danger: '#D32F2F',
+    warning: '#F57C00',
+    info: '#1976D2',
     light: '#F5F5F5',
     dark: '#212121',
     white: '#FFFFFF',
     text: '#212121',
     textLight: '#757575',
     border: '#E0E0E0',
+    background: '#FAFAFA',
+    cardBackground: '#FFFFFF',
+    accent: '#00C853',
   },
   BUSINESS_TYPES: {
     restaurant: 'Restaurante',

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { CONFIG } from '../../utils/config';
+import { formatPrice } from '../../utils/formatters';
 
 export default function DashboardScreen() {
   const [loading, setLoading] = useState(true);
@@ -89,7 +90,7 @@ export default function DashboardScreen() {
         </View>
 
         <View style={[styles.statCard, { backgroundColor: CONFIG.COLORS.info }]}>
-          <Text style={styles.statNumber}>${stats.todayRevenue}</Text>
+          <Text style={styles.statNumber}>{formatPrice(stats.todayRevenue)}</Text>
           <Text style={styles.statLabel}>Ventas Hoy</Text>
         </View>
       </View>
