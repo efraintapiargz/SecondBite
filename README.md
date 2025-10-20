@@ -1,50 +1,113 @@
-# SecondBite - Aplicación Móvil para Reducción de Desperdicios Alimenticios
+# SecondBite 🍽️♻️
 
-![SecondBite](https://img.shields.io/badge/version-1.0.0-green)
-![React Native](https://img.shields.io/badge/React%20Native-0.74-blue)
-![Node.js](https://img.shields.io/badge/Node.js-18+-green)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-orange)
+> Aplicación móvil para reducir el desperdicio alimentario conectando comercios con consumidores
 
-## 📋 Descripción
+[![Version](https://img.shields.io/badge/version-1.0.0-green)](https://github.com/efraintapiargz/SecondBite)
+[![React Native](https://img.shields.io/badge/React%20Native-0.74-blue)](https://reactnative.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-orange)](https://www.mysql.com/)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-SecondBite es una aplicación móvil innovadora que conecta comercios con consumidores para vender productos alimenticios próximos a caducar a precios reducidos, promoviendo la reducción del desperdicio alimentario y fomentando un consumo sostenible.
-
-### Autores
-- Christian Efrain Tapia Rodriguez
-- Ernesto Vega Velasco
-- Ulises Ramirez Tequianes
-
-### Asesores
-- D. en C. Flores Cortés Carlos Alberto
-- D. en Ed. Armando Román Gallardo
-
-**Universidad de Colima - Octubre 2025**
+**Universidad de Colima** | Ingeniería de Software | Octubre 2025
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## 📋 Tabla de Contenidos
 
+- [Descripción](#-descripción)
+- [Inicio Rápido](#-inicio-rápido)
+- [Tecnologías](#-tecnologías)
+- [Configuración](#-configuración)
+  - [1. MySQL](#1-configurar-mysql)
+  - [2. Backend](#2-configurar-backend)
+  - [3. Frontend](#3-configurar-frontend)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [API REST](#-api-rest)
+- [Testing](#-testing)
+- [Contribuir](#-contribuir)
+
+---
+
+## 📖 Descripción
+
+**SecondBite** conecta comercios que tienen productos alimenticios próximos a caducar con consumidores que buscan ofertas, reduciendo el desperdicio y promoviendo la sostenibilidad.
+
+### Características Principales
+
+**Para Consumidores:**
+- 🔍 Buscar productos con descuento por proximidad
+- 📍 Geolocalización de comercios cercanos
+- 🛒 Sistema de pedidos
+- ⭐ Reseñas y calificaciones
+- ❤️ Comercios favoritos
+
+**Para Comerciantes:**
+- 📦 Gestión de productos e inventario
+- 💰 Control de precios y descuentos
+- 📊 Dashboard con estadísticas
+- 🔔 Sistema de notificaciones
+- 📈 Reportes de ventas
+
+### Alineación ODS (Objetivos de Desarrollo Sostenible)
+- **ODS 2**: Hambre Cero
+- **ODS 12**: Producción y Consumo Responsables
+- **ODS 13**: Acción por el Clima
+
+---
+
+## 🚀 Inicio Rápido
+
+### Requisitos Previos
+
+- [Node.js](https://nodejs.org/) 18 o superior
+- [MySQL](https://www.mysql.com/) 8.0 o superior
+- [Git](https://git-scm.com/)
+- [Expo Go](https://expo.dev/client) (app móvil para testing)
+
+### Instalación Rápida
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/efraintapiargz/SecondBite.git
+cd SecondBite
+
+# 2. Instalar dependencias
+cd backend && npm install
+cd ../frontend && npm install
+
+# 3. Configurar MySQL (ver sección de configuración abajo)
+
+# 4. Iniciar backend
+cd backend
+npm run dev
+
+# 5. Iniciar frontend (en otra terminal)
+cd frontend
+npm start
 ```
-┌─────────────────┐
-│  Aplicación     │
-│  Móvil          │  → React Native + Expo + TypeScript
-│  (Frontend)     │
-└────────┬────────┘
-         │
-         │ HTTP/HTTPS
-         │
-┌────────▼────────┐
-│   API REST      │
-│   (Backend)     │  → Node.js + Express
-└────────┬────────┘
-         │
-         │ MySQL2
-         │
-┌────────▼────────┐
-│  Base de Datos  │  → MySQL 8.0
-│  Local          │
-└─────────────────┘
-```
+
+---
+
+## 🛠️ Tecnologías
+
+### Backend
+- **Node.js** + **Express.js** - Servidor API REST
+- **MySQL2** - Driver de base de datos con soporte para Promises
+- **JWT** - Autenticación y autorización
+- **bcryptjs** - Hash de contraseñas
+- **Multer** - Manejo de archivos
+
+### Frontend
+- **React Native** 0.74 - Framework móvil
+- **Expo** 51 - Toolchain de desarrollo
+- **TypeScript** - Tipado estático
+- **React Navigation** 6 - Navegación
+- **Axios** - Cliente HTTP
+- **AsyncStorage** - Almacenamiento local
+
+### Base de Datos
+- **MySQL** 8.0 - Base de datos relacional
+- 8 tablas: users, merchants, products, orders, order_items, reviews, favorites, notifications
 
 ---
 
@@ -129,43 +192,46 @@ Antes de comenzar, asegúrate de tener instalado:
 
 ---
 
-## 🛠️ Instalación y Configuración
+## ⚙️ Configuración
 
-### 1. Clonar el Repositorio
+### 1. Configurar MySQL
 
-```bash
-cd "C:\Users\Efrain PC\Desktop\SecondBite"
-```
+#### Instalación MySQL (si no lo tienes)
 
-### 2. Configurar la Base de Datos MySQL
-
-#### 2.1. Iniciar MySQL
-
-En Windows:
+**Windows:**
 ```powershell
-# Iniciar el servicio de MySQL
-net start MySQL80
-
-# O abrir MySQL Workbench / phpMyAdmin
+# Descargar de: https://dev.mysql.com/downloads/installer/
+# Instalar MySQL Server y configurar contraseña root
 ```
 
-#### 2.2. Crear la Base de Datos
-
-Opción 1 - Desde la línea de comandos:
+**macOS:**
 ```bash
-# Conectarse a MySQL
+brew install mysql
+brew services start mysql
+mysql_secure_installation
+```
+
+**Linux (Ubuntu):**
+```bash
+sudo apt update && sudo apt install mysql-server
+sudo systemctl start mysql
+sudo mysql_secure_installation
+```
+
+#### Crear la Base de Datos
+
+```bash
+# Conectar a MySQL
 mysql -u root -p
 
-# En el prompt de MySQL, ejecutar:
-source C:\Users\Efrain PC\Desktop\SecondBite\backend\database\init.sql
-```
+# Ejecutar el script de inicialización
+source backend/database/init.sql
 
-Opción 2 - Copiar y pegar el contenido:
-```bash
+# O desde la línea de comandos:
 mysql -u root -p < backend/database/init.sql
 ```
 
-#### 2.3. Verificar la creación
+#### Verificar la Base de Datos
 
 ```sql
 USE secondbite_db;
@@ -173,467 +239,303 @@ SHOW TABLES;
 SELECT * FROM users;
 ```
 
-Deberías ver las siguientes tablas:
-- users
-- merchants
-- products
-- orders
-- order_items
-- reviews
-- favorites
-- notifications
-
-### 3. Configurar el Backend
-
-#### 3.1. Navegar a la carpeta del backend
+### 2. Configurar Backend
 
 ```bash
+# Navegar al backend
 cd backend
-```
 
-#### 3.2. Instalar dependencias
-
-```bash
+# Instalar dependencias
 npm install
+
+# Configurar variables de entorno
+cp .env.example .env
+# Editar .env con tus credenciales
 ```
 
-#### 3.3. Configurar variables de entorno
-
-Crear archivo `.env` copiando `.env.example`:
-
-```bash
-copy .env.example .env
-```
-
-Editar `.env` con tus credenciales de MySQL:
+**Contenido de `.env`:**
 
 ```env
 PORT=3000
-NODE_ENV=development
-
-# Configuración de MySQL
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
-DB_PASSWORD=tu_password_aqui
+DB_PASSWORD=tu_password_mysql
 DB_NAME=secondbite_db
-
-# JWT Secret
-JWT_SECRET=tu_clave_secreta_muy_segura_123456
+JWT_SECRET=clave_secreta_muy_segura_cambiar_en_produccion
 JWT_EXPIRES_IN=7d
-
-# CORS
 CORS_ORIGIN=*
 ```
 
-#### 3.4. Iniciar el servidor
+**Iniciar el servidor:**
 
 ```bash
-# Desarrollo con recarga automática
 npm run dev
+```
 
-# O producción
+Deberías ver: `✅ Conexión exitosa a MySQL`
+
+### 3. Configurar Frontend
+
+```bash
+# Navegar al frontend
+cd ../frontend
+
+# Instalar dependencias
+npm install
+
+# Iniciar Expo
 npm start
 ```
 
-Deberías ver:
-```
-╔═══════════════════════════════════════════════════════════╗
-║              🍽️  SecondBite API Server  🍽️               ║
-╚═══════════════════════════════════════════════════════════╝
+**Configurar IP para dispositivo físico:**
 
-🚀 Servidor ejecutándose en: http://localhost:3000
-✅ Conexión exitosa a MySQL
-```
-
-#### 3.5. Verificar el servidor
-
-Abrir en el navegador o Postman:
-```
-http://localhost:3000/health
-```
-
-Deberías ver:
-```json
-{
-  "status": "ok",
-  "database": "connected",
-  "timestamp": "2025-10-16T..."
-}
-```
-
-### 4. Configurar el Frontend
-
-#### 4.1. Abrir una nueva terminal y navegar al frontend
-
-```bash
-cd frontend
-```
-
-#### 4.2. Instalar dependencias
-
-```bash
-npm install
-```
-
-#### 4.3. Configurar la URL del API
-
-Editar `src/utils/config.ts` y cambiar la URL del API si es necesario:
+Editar `frontend/src/utils/config.ts`:
 
 ```typescript
-// Si usas tu computadora como servidor
-export const API_URL = 'http://TU_IP_LOCAL:3000/api';
-
-// Ejemplo:
-// export const API_URL = 'http://192.168.1.10:3000/api';
+export const CONFIG = {
+  API_URL: 'http://192.168.X.X:3000/api', // Cambia por tu IP local
+  // ...
+};
 ```
 
-Para encontrar tu IP local:
-
-**Windows:**
-```bash
-ipconfig
-```
-Busca "Dirección IPv4" en la sección de tu adaptador de red activo.
-
-**macOS/Linux:**
-```bash
-ifconfig | grep "inet "
-```
-
-#### 4.4. Iniciar la aplicación
-
-```bash
-npm start
-```
-
-O específicamente:
-```bash
-# Android
-npm run android
-
-# iOS
-npm run ios
-```
-
-#### 4.5. Escanear el código QR
-
-1. Abre **Expo Go** en tu dispositivo móvil
-2. Escanea el código QR que aparece en la terminal
-3. Espera a que la aplicación se cargue
+**Escanear QR con Expo Go** en tu teléfono móvil.
 
 ---
 
-## 📱 Uso de la Aplicación
-
-### Usuarios de Prueba
-
-La base de datos incluye usuarios de ejemplo:
-
-#### Consumidor
-```
-Email: consumer@example.com
-Password: (necesitas definirla en el script SQL)
-```
-
-#### Comerciante
-```
-Email: merchant@example.com
-Password: (necesitas definirla en el script SQL)
-```
-
-### Flujo de Uso
-
-#### Como Consumidor:
-1. **Registro**: Crear cuenta como consumidor
-2. **Explorar**: Ver productos disponibles en el inicio
-3. **Buscar**: Filtrar por categoría, precio, descuento
-4. **Ubicación**: Encontrar productos cercanos
-5. **Comprar**: Realizar pedido de productos
-6. **Seguimiento**: Ver estado de pedidos
-
-#### Como Comerciante:
-1. **Registro**: Crear cuenta como comerciante
-2. **Configurar**: Completar perfil del negocio
-3. **Agregar**: Publicar productos próximos a caducar
-4. **Gestionar**: Actualizar inventario y precios
-5. **Pedidos**: Confirmar y procesar pedidos
-6. **Estadísticas**: Ver ventas y rendimiento
-
----
-
-## 🔌 API Endpoints
-
-### Autenticación
-```
-POST   /api/auth/register      - Registrar usuario
-POST   /api/auth/login         - Iniciar sesión
-GET    /api/auth/profile       - Obtener perfil
-PUT    /api/auth/profile       - Actualizar perfil
-PUT    /api/auth/change-password - Cambiar contraseña
-```
-
-### Productos
-```
-GET    /api/products           - Listar productos
-GET    /api/products/nearby    - Productos cercanos
-GET    /api/products/:id       - Detalle de producto
-POST   /api/products           - Crear producto (comerciante)
-PUT    /api/products/:id       - Actualizar producto
-DELETE /api/products/:id       - Eliminar producto
-GET    /api/products/merchant/my-products - Mis productos
-```
-
-### Comercios
-```
-GET    /api/merchants          - Listar comercios
-GET    /api/merchants/nearby   - Comercios cercanos
-GET    /api/merchants/:id      - Detalle de comercio
-GET    /api/merchants/:id/products - Productos del comercio
-GET    /api/merchants/me/info  - Mi comercio
-PUT    /api/merchants/me/info  - Actualizar mi comercio
-```
-
-### Pedidos
-```
-POST   /api/orders             - Crear pedido
-GET    /api/orders/my-orders   - Mis pedidos (consumidor)
-GET    /api/orders/:id         - Detalle de pedido
-PUT    /api/orders/:id/cancel  - Cancelar pedido
-GET    /api/orders/merchant/orders - Pedidos (comerciante)
-PUT    /api/orders/:id/status  - Actualizar estado
-GET    /api/orders/merchant/stats - Estadísticas
-```
-
----
-
-## 🗄️ Estructura de Base de Datos
-
-### Tablas Principales
-
-```sql
-- users (usuarios: consumidores y comerciantes)
-- merchants (información de comercios)
-- products (productos)
-- orders (pedidos)
-- order_items (items de pedidos)
-- reviews (reseñas y calificaciones)
-- favorites (comercios favoritos)
-- notifications (notificaciones)
-```
-
-### Diagrama de Relaciones
-
-```
-users (1) ──── (1) merchants
-  │
-  ├── (1) ──── (*) orders
-  │
-  └── (1) ──── (*) favorites
-
-merchants (1) ──── (*) products
-  │
-  └── (1) ──── (*) orders
-
-products (*) ──── (*) order_items ──── (1) orders
-
-orders (1) ──── (*) reviews
-```
-
----
-
-## 🧪 Pruebas con Postman
-
-### 1. Registro de Usuario
-
-```http
-POST http://localhost:3000/api/auth/register
-Content-Type: application/json
-
-{
-  "email": "test@example.com",
-  "password": "password123",
-  "full_name": "Usuario de Prueba",
-  "phone": "3121234567",
-  "user_type": "consumer",
-  "address": "Calle Principal 123",
-  "latitude": 19.2433,
-  "longitude": -103.7248
-}
-```
-
-### 2. Login
-
-```http
-POST http://localhost:3000/api/auth/login
-Content-Type: application/json
-
-{
-  "email": "test@example.com",
-  "password": "password123"
-}
-```
-
-Guarda el `token` de la respuesta.
-
-### 3. Obtener Productos
-
-```http
-GET http://localhost:3000/api/products
-Authorization: Bearer TU_TOKEN_AQUI
-```
-
-### 4. Crear Producto (Comerciante)
-
-```http
-POST http://localhost:3000/api/products
-Authorization: Bearer TU_TOKEN_AQUI
-Content-Type: application/json
-
-{
-  "name": "Pizza del día",
-  "description": "Pizza familiar de pepperoni",
-  "category": "prepared_food",
-  "original_price": 150,
-  "discounted_price": 90,
-  "quantity_available": 3,
-  "expiry_date": "2025-10-17"
-}
-```
-
----
-
-## ⚠️ Solución de Problemas
-
-### Error: No se puede conectar a MySQL
-
-```bash
-# Verificar si MySQL está corriendo
-net start MySQL80
-
-# O reiniciar el servicio
-net stop MySQL80
-net start MySQL80
-```
-
-### Error: Puerto 3000 ya está en uso
-
-```bash
-# Cambiar el puerto en backend/.env
-PORT=3001
-```
-
-### Error: No se puede conectar al backend desde el móvil
-
-1. Verifica que estés en la misma red WiFi
-2. Usa tu IP local en lugar de `localhost`
-3. Desactiva el firewall temporalmente para pruebas
-4. En Windows, permite Node.js en el firewall
-
-### Error: La aplicación no carga en Expo
-
-```bash
-# Limpiar caché
-expo start -c
-
-# O reinstalar dependencias
-rm -rf node_modules
-npm install
-```
-
----
-
-## 📚 Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
 ```
 SecondBite/
 ├── backend/
 │   ├── database/
-│   │   └── init.sql              # Script de inicialización de BD
+│   │   └── init.sql           # Script de inicialización SQL
 │   ├── src/
 │   │   ├── config/
-│   │   │   └── database.js       # Configuración de MySQL
-│   │   ├── controllers/          # Controladores de la API
-│   │   ├── middleware/           # Middlewares (auth)
-│   │   ├── models/               # Modelos de datos
-│   │   ├── routes/               # Rutas de la API
-│   │   └── server.js             # Servidor principal
-│   ├── .env.example              # Ejemplo de variables de entorno
-│   ├── .gitignore
+│   │   │   └── database.js    # Configuración MySQL
+│   │   ├── controllers/        # Lógica de negocio
+│   │   │   ├── authController.js
+│   │   │   ├── productController.js
+│   │   │   ├── merchantController.js
+│   │   │   └── orderController.js
+│   │   ├── models/            # Acceso a datos
+│   │   │   ├── User.js
+│   │   │   ├── Merchant.js
+│   │   │   ├── Product.js
+│   │   │   └── Order.js
+│   │   ├── middleware/
+│   │   │   └── auth.js        # Autenticación JWT
+│   │   ├── routes/            # Endpoints API
+│   │   │   ├── auth.js
+│   │   │   ├── products.js
+│   │   │   ├── merchants.js
+│   │   │   └── orders.js
+│   │   └── server.js          # Punto de entrada
+│   ├── .env.example
 │   └── package.json
 │
 └── frontend/
     ├── src/
-    │   ├── components/           # Componentes reutilizables
-    │   ├── context/              # Context API (Auth)
-    │   ├── navigation/           # Navegación de la app
-    │   ├── screens/              # Pantallas
-    │   ├── services/             # Servicios (API calls)
-    │   ├── types/                # Tipos TypeScript
-    │   └── utils/                # Utilidades y configuración
-    ├── App.tsx                   # Componente principal
-    ├── app.json                  # Configuración de Expo
-    ├── tsconfig.json             # Configuración TypeScript
+    │   ├── components/        # Componentes reutilizables
+    │   ├── context/
+    │   │   └── AuthContext.tsx
+    │   ├── navigation/
+    │   │   └── AppNavigator.tsx
+    │   ├── screens/
+    │   │   ├── LoginScreen.tsx
+    │   │   ├── consumer/      # Pantallas de consumidor
+    │   │   └── merchant/      # Pantallas de comerciante
+    │   ├── services/          # Servicios API
+    │   │   ├── api.ts
+    │   │   ├── authService.ts
+    │   │   └── productService.ts
+    │   ├── types/
+    │   │   └── index.ts       # Definiciones TypeScript
+    │   └── utils/
+    │       └── config.ts      # Configuración global
+    ├── App.tsx
+    ├── app.json
     └── package.json
 ```
 
 ---
 
-## 🤝 Contribuciones
+## 🔌 API REST
 
-Este es un proyecto académico para la tesis de grado. Para contribuir:
+### Base URL
+```
+http://localhost:3000/api
+```
 
-1. Haz fork del proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add: AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+### Endpoints Principales
+
+#### Autenticación
+- `POST /auth/register` - Registro de usuario
+- `POST /auth/login` - Inicio de sesión
+- `GET /auth/profile` - Obtener perfil (🔒)
+- `PUT /auth/profile` - Actualizar perfil (🔒)
+- `PUT /auth/change-password` - Cambiar contraseña (🔒)
+
+#### Productos
+- `GET /products` - Listar productos
+- `GET /products/nearby` - Productos cercanos
+- `GET /products/:id` - Detalle de producto
+- `POST /products` - Crear producto (🔒 Merchant)
+- `PUT /products/:id` - Actualizar producto (🔒 Merchant)
+- `DELETE /products/:id` - Eliminar producto (🔒 Merchant)
+
+#### Comercios
+- `GET /merchants` - Listar comercios
+- `GET /merchants/nearby` - Comercios cercanos
+- `GET /merchants/:id` - Detalle de comercio
+- `GET /merchants/me/info` - Mi comercio (🔒 Merchant)
+- `PUT /merchants/me/info` - Actualizar comercio (🔒 Merchant)
+
+#### Pedidos
+- `POST /orders` - Crear pedido (🔒 Consumer)
+- `GET /orders/my-orders` - Mis pedidos (🔒 Consumer)
+- `GET /orders/:id` - Detalle de pedido (🔒)
+- `PUT /orders/:id/cancel` - Cancelar pedido (🔒 Consumer)
+- `GET /orders/merchant/orders` - Pedidos recibidos (🔒 Merchant)
+- `PUT /orders/:id/status` - Actualizar estado (🔒 Merchant)
+- `GET /orders/merchant/stats` - Estadísticas (🔒 Merchant)
+
+� = Requiere autenticación JWT
+
+**Ver ejemplos completos en:** [`EJEMPLOS_API.md`](EJEMPLOS_API.md)
+
+---
+
+## 🧪 Testing
+
+### Usuarios de Prueba
+
+```javascript
+// Consumidor
+{
+  "email": "juan@example.com",
+  "password": "password123"
+}
+
+// Comerciante
+{
+  "email": "maria@tienda.com",
+  "password": "password123"
+}
+```
+
+### Probar con Postman
+
+1. Importar la colección desde `EJEMPLOS_API.md`
+2. Configurar variable `baseUrl`: `http://localhost:3000/api`
+3. Registrar/Login → Copiar token
+4. Agregar header: `Authorization: Bearer {token}`
+
+### Health Check
+
+```bash
+curl http://localhost:3000/health
+```
+
+---
+
+## 🗄️ Base de Datos
+
+### Esquema MySQL
+
+**8 Tablas Principales:**
+
+1. **users** - Usuarios del sistema
+2. **merchants** - Perfiles de comercio
+3. **products** - Catálogo de productos
+4. **orders** - Pedidos
+5. **order_items** - Items de pedidos
+6. **reviews** - Reseñas
+7. **favorites** - Favoritos
+8. **notifications** - Notificaciones
+
+### Diagrama ER Simplificado
+
+```
+users (1) ──< (N) merchants
+merchants (1) ──< (N) products
+users (1) ──< (N) orders
+orders (1) ──< (N) order_items
+products (N) ──< (N) order_items
+users (1) ──< (N) reviews
+users (1) ──< (N) favorites
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Error: "Cannot connect to MySQL"
+```bash
+# Verificar que MySQL está corriendo
+net start MySQL80  # Windows
+brew services start mysql  # macOS
+sudo systemctl start mysql  # Linux
+
+# Verificar credenciales en .env
+```
+
+### Error: "Module not found"
+```bash
+# Reinstalar dependencias
+rm -rf node_modules package-lock.json
+npm install
+```
+
+### Frontend no conecta al backend
+```typescript
+// Cambiar localhost por tu IP en config.ts
+API_URL: 'http://192.168.1.10:3000/api'
+```
+
+### TypeScript errors después de npm install
+```bash
+# Recargar VS Code
+Ctrl + Shift + P → "Developer: Reload Window"
+```
+
+---
+
+## 👥 Autores
+
+- **Christian Efrain Tapia Rodriguez**
+- **Ernesto Vega Velasco**
+- **Ulises Ramirez Tequianes**
+
+### Asesores
+- D. en C. Flores Cortés Carlos Alberto
+- D. en Ed. Armando Román Gallardo
+
+**Universidad de Colima** - Facultad de Ingeniería de Software
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto es de código abierto bajo la licencia MIT.
+Este proyecto es académico y fue desarrollado como parte de un proyecto de tesis.
 
 ---
 
-## 📞 Contacto
+## 🤝 Contribuir
 
-Para preguntas o soporte:
-
-- **Autores**: Christian Efrain Tapia Rodriguez, Ernesto Vega Velasco, Ulises Ramirez Tequianes
-- **Institución**: Universidad de Colima
-- **Facultad**: Ingeniería de Software
-
----
-
-## 🎯 Objetivos de Desarrollo Sostenible
-
-Este proyecto contribuye a los siguientes ODS de las Naciones Unidas:
-
-- **ODS 2**: Hambre Cero
-- **ODS 12**: Producción y Consumo Responsables
-- **ODS 13**: Acción por el Clima
+1. Fork el proyecto
+2. Crear rama de feature (`git checkout -b feature/AmazingFeature`)
+3. Commit cambios (`git commit -m 'Add AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abrir Pull Request
 
 ---
 
-## 📊 Estado del Proyecto
+## 📞 Soporte
 
-- [x] Diseño de arquitectura
-- [x] Base de datos MySQL
-- [x] API Backend completa
-- [x] Autenticación JWT
-- [x] Sistema de productos
-- [x] Sistema de pedidos
-- [x] Frontend React Native básico
-- [ ] Integración completa de mapas
-- [ ] Sistema de notificaciones push
-- [ ] Pasarela de pagos
-- [ ] Tests unitarios
-- [ ] Tests de integración
-- [ ] Documentación API (Swagger)
-- [ ] Deploy a producción
+Para dudas o problemas:
+- Revisar [`EJEMPLOS_API.md`](EJEMPLOS_API.md) para ejemplos de uso
+- Verificar sección de [Troubleshooting](#-troubleshooting)
+- Crear un [Issue](https://github.com/efraintapiargz/SecondBite/issues)
 
 ---
-
-**¡Gracias por usar SecondBite! Juntos reducimos el desperdicio alimentario. 🍽️♻️**
