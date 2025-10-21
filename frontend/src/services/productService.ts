@@ -40,9 +40,25 @@ export const productService = {
     return response.data;
   },
 
+  // Crear producto con imagen (multipart)
+  async createMultipart(form: FormData): Promise<{ message: string; product: Product }> {
+    const response = await api.post('/products', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
   // Actualizar producto
   async update(id: number, data: Partial<ProductForm>): Promise<{ message: string; product: Product }> {
     const response = await api.put(`/products/${id}`, data);
+    return response.data;
+  },
+
+  // Actualizar con imagen (multipart)
+  async updateMultipart(id: number, form: FormData): Promise<{ message: string; product: Product }> {
+    const response = await api.put(`/products/${id}`, form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
     return response.data;
   },
 

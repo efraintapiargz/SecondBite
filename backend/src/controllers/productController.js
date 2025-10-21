@@ -69,20 +69,37 @@ exports.createProduct = async (req, res) => {
     console.log('➕ createProduct called - User ID:', req.userId);
     console.log('📦 Product data:', req.body);
     
-    const Merchant = require('../models/Merchant');
-    const merchant = await Merchant.findByUserId(req.userId);
+  const Merchant = require('../models/Merchant');
+  let merchant = await Merchant.findByUserId(req.userId);
     
     console.log('🏪 Merchant found:', merchant ? `ID: ${merchant.id}, Name: ${merchant.business_name}` : 'NOT FOUND');
     
     if (!merchant) {
-      console.error('❌ No merchant found for user ID:', req.userId);
-      return res.status(403).json({ error: 'No tienes permisos de comerciante' });
+      console.error('⚠️ No merchant found for user ID, creating default merchant:', req.userId);
+      const User = require('../models/User');
+      const user = await User.findById(req.userId);
+      const createdId = await Merchant.create({
+        user_id: req.userId,
+        business_name: (user?.full_name ? `Negocio de ${user.full_name}` : 'Mi Negocio'),
+        business_type: 'other',
+        description: '',
+        business_hours: {},
+        logo_image: null,
+        banner_image: null,
+      });
+      merchant = await Merchant.findById(createdId);
     }
 
     const {
       name, description, category, original_price, discounted_price,
       quantity_available, expiry_date, image_url
     } = req.body;
+
+    // Si viene archivo, construir URL pública
+    let finalImageUrl = image_url;
+    if (req.file) {
+      finalImageUrl = `/uploads/products/${req.file.filename}`;
+    }
 
     console.log('💾 Creating product with merchant ID:', merchant.id);
     const productId = await Product.create({
@@ -94,7 +111,7 @@ exports.createProduct = async (req, res) => {
       discounted_price,
       quantity_available,
       expiry_date,
-      image_url
+      image_url: finalImageUrl
     });
 
     console.log('✅ Product created with ID:', productId);
@@ -130,6 +147,12 @@ exports.updateProduct = async (req, res) => {
       quantity_available, expiry_date, image_url, status
     } = req.body;
 
+    // Si se sube nueva imagen, usarla
+    let finalImageUrl = image_url || product.image_url;
+    if (req.file) {
+      finalImageUrl = `/uploads/products/${req.file.filename}`;
+    }
+
     const updated = await Product.update(req.params.id, {
       name: name || product.name,
       description: description || product.description,
@@ -138,7 +161,7 @@ exports.updateProduct = async (req, res) => {
       discounted_price: discounted_price || product.discounted_price,
       quantity_available: quantity_available !== undefined ? quantity_available : product.quantity_available,
       expiry_date: expiry_date || product.expiry_date,
-      image_url: image_url || product.image_url,
+      image_url: finalImageUrl,
       status: status || product.status
     });
 

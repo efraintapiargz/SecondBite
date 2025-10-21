@@ -12,5 +12,6 @@ router.get('/:id/products', merchantController.getMerchantProducts);
 // Rutas protegidas - Comerciantes
 router.get('/me/info', authenticate, requireMerchant, merchantController.getMyMerchant);
 router.put('/me/info', authenticate, requireMerchant, merchantController.updateMyMerchant);
+router.get('/me/dashboard', authenticate, requireMerchant, merchantController.getMyDashboard);
 
 module.exports = router;

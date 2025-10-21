@@ -15,8 +15,11 @@ import SearchScreen from '../screens/consumer/SearchScreen';
 import OrdersScreen from '../screens/consumer/OrdersScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
 import CartScreen from '../screens/consumer/CartScreen';
 import CheckoutScreen from '../screens/consumer/CheckoutScreen';
+import ReceiptScreen from '../screens/consumer/ReceiptScreen';
+import NotificationsScreen from '../screens/NotificationsScreen';
 
 // Merchant Screens
 import DashboardScreen from '../screens/merchant/DashboardScreen';
@@ -159,6 +162,8 @@ export default function AppNavigator() {
         ) : user.user_type === 'merchant' ? (
           <>
             <Stack.Screen name="MainTabs" component={MerchantTabs} />
+            <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }} />
             <Stack.Screen 
               name="ProductForm" 
               component={ProductFormScreen}
@@ -173,6 +178,9 @@ export default function AppNavigator() {
         ) : (
           <>
             <Stack.Screen name="MainTabs" component={ConsumerTabs} />
+            <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Receipt" component={ReceiptScreen} options={{ headerShown: false }} />
             <Stack.Screen 
               name="ProductDetail" 
               component={ProductDetailScreen}

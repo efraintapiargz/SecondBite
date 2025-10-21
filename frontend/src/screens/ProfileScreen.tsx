@@ -9,7 +9,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { CONFIG } from '../utils/config';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }: any) {
   const { user, signOut } = useAuth();
 
   const handleLogout = async () => {
@@ -43,12 +43,12 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.section}>
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('EditProfile')}>
             <Text style={styles.menuIcon}>📝</Text>
             <Text style={styles.menuText}>Editar Perfil</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notifications')}>
             <Text style={styles.menuIcon}>🔔</Text>
             <Text style={styles.menuText}>Notificaciones</Text>
           </TouchableOpacity>

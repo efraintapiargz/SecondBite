@@ -7,9 +7,12 @@ const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
 const merchantRoutes = require('./routes/merchants');
 const orderRoutes = require('./routes/orders');
+const notificationRoutes = require('./routes/notifications');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const path = require('path');
+const fs = require('fs');
 
 // Middlewares
 app.use(cors({
@@ -23,6 +26,13 @@ app.use((req, res, next) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   next();
 });
+
+// Servir archivos estáticos (uploads)
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsDir));
 
 // Logger middleware
 app.use((req, res, next) => {
@@ -39,7 +49,9 @@ app.get('/', (req, res) => {
       auth: '/api/auth',
       products: '/api/products',
       merchants: '/api/merchants',
-      orders: '/api/orders'
+      orders: '/api/orders',
+      notifications: '/api/notifications',
+      uploads: '/uploads'
     }
   });
 });
@@ -48,6 +60,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/merchants', merchantRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Ruta para verificar salud del servidor
 app.get('/health', async (req, res) => {

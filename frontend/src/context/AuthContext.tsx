@@ -70,7 +70,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   async function updateUser(data: Partial<User>) {
     try {
       const response = await authService.updateProfile(data);
-      setUser(response.user);
+      // Fetch latest profile to keep in sync (includes merchant info if applicable)
+      const profile = await authService.getProfile();
+      setUser(profile.user);
     } catch (error) {
       throw error;
     }

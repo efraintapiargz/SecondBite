@@ -61,8 +61,15 @@ exports.createOrder = async (req, res) => {
       });
     }
 
-    // Validar método de pago (solo pago en tienda)
-    const validPaymentMethod = payment_method === 'store' ? 'store' : 'cash';
+    // Validar método de pago contra ENUM de DB ('cash','card','transfer')
+    const allowedPaymentMethods = ['cash', 'card', 'transfer'];
+    let validPaymentMethod = 'cash';
+    if (payment_method === 'store') {
+      // 'store' (pago en tienda) se mapea a 'cash' en DB
+      validPaymentMethod = 'cash';
+    } else if (allowedPaymentMethods.includes(payment_method)) {
+      validPaymentMethod = payment_method;
+    }
     
     console.log('💾 Creating order with data:', {
       consumer_id: req.userId,
@@ -88,11 +95,47 @@ exports.createOrder = async (req, res) => {
     console.log('✅ Order created with ID:', orderId);
 
     const order = await Order.findById(orderId);
+
+    // Generar folio/recibo legible (ej: SB-202510-000123)
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const folio = `SB-${y}${m}-${String(orderId).padStart(6, '0')}`;
+
+    // Agregar folio al objeto de respuesta (sin alterar DB en esta versión)
+    order.receipt_number = folio;
+
+    // Crear notificaciones para comerciante y consumidor
+    try {
+      const Notification = require('../models/Notification');
+      const Merchant = require('../models/Merchant');
+      const merchant = await Merchant.findById(order.merchant_id);
+
+      // Para comerciante (user dueño del comercio)
+      if (merchant?.user_id) {
+        await Notification.create({
+          user_id: merchant.user_id,
+          title: '📦 Nuevo pedido recibido',
+          message: `Folio ${folio}: ${validatedItems.length} artículo(s) por ${total_amount.toFixed(2)}.`,
+          type: 'order',
+        });
+      }
+      // Para consumidor (confirmación)
+      await Notification.create({
+        user_id: req.userId,
+        title: '🧾 Pedido creado',
+        message: `Tu pedido (Folio ${folio}) fue creado. Paga en tienda al recoger.`,
+        type: 'order',
+      });
+    } catch (notifyErr) {
+      console.error('⚠️ Error creando notificaciones:', notifyErr.message);
+    }
     console.log('✅ Order retrieved successfully');
     
     res.status(201).json({
       message: 'Pedido creado exitosamente. Pago en tienda al recoger.',
-      order
+      order,
+      receipt_number: folio,
     });
   } catch (error) {
     console.error('❌ Error al crear pedido:', error);

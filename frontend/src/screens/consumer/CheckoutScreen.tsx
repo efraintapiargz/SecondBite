@@ -16,6 +16,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { formatPrice } from '../../utils/formatters';
 import AppHeader from '../../components/AppHeader';
+import api from '../../services/api';
 
 type Props = {
   navigation: any;
@@ -25,10 +26,20 @@ export default function CheckoutScreen({ navigation }: Props) {
   const { cart, getCartTotal, clearCart, getMerchantId, getMerchantName } = useCart();
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
+  // Modal de éxito removido para navegar directo al comprobante y evitar confusiones
 
   const total = getCartTotal();
   const merchantId = getMerchantId();
   const merchantName = getMerchantName();
+  const getApiBase = () => {
+    // CONFIG.API_URL suele terminar en /api
+    try {
+      if (CONFIG.API_URL.endsWith('/api')) return CONFIG.API_URL.slice(0, -4);
+      return CONFIG.API_URL;
+    } catch {
+      return CONFIG.API_URL;
+    }
+  };
   
   // Generar hora de recogida automáticamente (1 hora después)
   const getPickupTime = () => {
@@ -55,6 +66,25 @@ export default function CheckoutScreen({ navigation }: Props) {
       setLoading(true);
       console.log('🔄 Loading started');
 
+      // Preflight de conectividad al backend
+      try {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), 3000);
+        const health = await fetch(`${getApiBase()}/health`, { signal: controller.signal });
+        clearTimeout(id);
+        if (!health.ok) {
+          throw new Error(`Health check HTTP ${health.status}`);
+        }
+        console.log('🩺 Health check OK');
+      } catch (e: any) {
+        console.error('❌ Health check failed:', e?.message || e);
+        Alert.alert(
+          'Sin conexión con el servidor',
+          `No pudimos conectar con el backend en ${getApiBase()}. Verifica que el servidor esté encendido y que tu dispositivo esté en la misma red.`
+        );
+        return;
+      }
+
       // Preparar los items del pedido
       const items = cart.map((item) => ({
         product_id: item.product.id,
@@ -63,8 +93,8 @@ export default function CheckoutScreen({ navigation }: Props) {
       }));
       console.log('📋 Order items prepared:', items);
 
-      // Obtener token
-      const token = await AsyncStorage.getItem('token');
+  // Obtener token
+  const token = await AsyncStorage.getItem('token');
       console.log('🔑 Token retrieved:', token ? 'Yes' : 'No');
       
       if (!token) {
@@ -74,43 +104,33 @@ export default function CheckoutScreen({ navigation }: Props) {
         return;
       }
       
-      // Crear la orden
+      // Crear la orden (pasando header Authorization directo para evitar demoras del interceptor)
       const orderData = {
         merchant_id: merchantId,
         total_amount: total,
-        payment_method: 'store', // Pago en tienda
+        payment_method: 'cash', // Pago en tienda (mapeado en DB)
         pickup_time: pickupTime,
         notes: notes?.trim() || undefined,
         items,
       };
       console.log('📤 Sending order data:', orderData);
       console.log('API URL:', `${CONFIG.API_URL}/orders`);
-
-      const response = await axios.post(`${CONFIG.API_URL}/orders`, orderData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const postPromise = api.post(`/orders`, orderData, {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
       });
+      // Salvaguarda por si algo queda colgado más allá del timeout de axios
+  const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout de solicitud')), 12000));
+      const response: any = await Promise.race([postPromise, timeoutPromise]);
       console.log('✅ Order created successfully:', response.data);
 
       // Limpiar carrito
       clearCart();
       console.log('🧹 Cart cleared');
 
-      // Mostrar mensaje de éxito
-      Alert.alert(
-        '¡Pedido realizado!',
-        `Tu pedido en ${merchantName} ha sido enviado. Pagarás ${formatPrice(total)} al recogerlo.`
-      );
-      
-      // Redirigir a pedidos
-      console.log('🔄 Navigating to orders');
-      setTimeout(() => {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'MainTabs', params: { screen: 'Orders' } }],
-        });
-      }, 100);
+      // Ir al comprobante con folio y resumen
+  const receipt_number = response.data?.receipt_number;
+  const order = response.data?.order;
+  navigation.navigate('Receipt', { order, receipt_number });
     } catch (error: any) {
       console.error('❌ Error creating order:', error);
       console.error('Error details:', {
@@ -142,12 +162,12 @@ export default function CheckoutScreen({ navigation }: Props) {
         return;
       }
       
-      const errorMessage = error.response?.data?.error || error.message || 'No se pudo crear el pedido';
-      
-      Alert.alert(
-        'Error',
-        errorMessage
-      );
+      // Mensaje más claro para errores de red o timeouts
+      let errorMessage = error.response?.data?.error || error.message || 'No se pudo crear el pedido';
+      if (!error.response && (error.message?.includes('Network Error') || error.code === 'ECONNABORTED')) {
+        errorMessage = `No se pudo conectar con el servidor. Verifica que el backend esté corriendo y que API_URL sea accesible desde tu dispositivo: ${CONFIG.API_URL}`;
+      }
+      Alert.alert('Error', errorMessage);
     } finally {
       setLoading(false);
       console.log('🔄 Loading finished');
@@ -263,6 +283,16 @@ export default function CheckoutScreen({ navigation }: Props) {
           )}
         </TouchableOpacity>
       </View>
+
+      {/* Overlay de carga */}
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <View style={styles.loadingBox}>
+            <ActivityIndicator size="large" color={CONFIG.COLORS.primary} />
+            <Text style={styles.loadingLabel}>Confirmando pedido...</Text>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -450,5 +480,31 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#fff',
     marginTop: 4,
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingBox: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  loadingLabel: {
+    marginTop: 10,
+    color: CONFIG.COLORS.text,
+    fontWeight: '600',
   },
 });

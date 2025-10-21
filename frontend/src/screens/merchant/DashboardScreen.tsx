@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,17 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
+import { Animated, Easing } from 'react-native';
 import { CONFIG } from '../../utils/config';
 import { formatPrice } from '../../utils/formatters';
 
-export default function DashboardScreen() {
+import { merchantService } from '../../services/merchantService';
+import { notificationService } from '../../services/notificationService';
+import { useFocusEffect } from '@react-navigation/native';
+
+type Props = { navigation: any };
+
+export default function DashboardScreen({ navigation }: Props) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState({
@@ -19,18 +26,48 @@ export default function DashboardScreen() {
     activeProducts: 0,
     pendingOrders: 0,
     todayRevenue: 0,
+    unreadNotifications: 0,
   });
+  const [latestNotification, setLatestNotification] = useState<{ title: string; created_at: string } | null>(null);
+  const lastUnreadRef = useRef(0);
+  const badgeScale = useRef(new Animated.Value(1)).current;
+
+  // Animar la campana cuando suben no leídas
+  useEffect(() => {
+    const current = stats.unreadNotifications || 0;
+    const prev = lastUnreadRef.current || 0;
+    if (current > prev) {
+      Animated.sequence([
+        Animated.timing(badgeScale, { toValue: 1.2, duration: 150, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+        Animated.timing(badgeScale, { toValue: 1, duration: 150, easing: Easing.in(Easing.quad), useNativeDriver: true }),
+      ]).start();
+    }
+    lastUnreadRef.current = current;
+  }, [stats.unreadNotifications]);
 
   const loadDashboard = async () => {
     try {
       setLoading(true);
-      // TODO: Load dashboard data
-      setStats({
-        totalProducts: 0,
-        activeProducts: 0,
-        pendingOrders: 0,
-        todayRevenue: 0,
-      });
+      const dashboard = await merchantService.getMyDashboard();
+      // Notificaciones no leídas
+      let unread = 0;
+      try {
+        // Traer 1 más reciente (leída o no) para mostrar preview
+        const latest = await notificationService.list({ limit: 1 });
+        if (latest.notifications?.length) {
+          const n = latest.notifications[0];
+          setLatestNotification({ title: n.title, created_at: n.created_at });
+        } else {
+          setLatestNotification(null);
+        }
+        // Y contar no leídas
+        const unreadRes = await notificationService.list({ onlyUnread: true, limit: 1 });
+        unread = unreadRes.unread || 0;
+      } catch (e) {
+        unread = 0;
+        setLatestNotification(null);
+      }
+      setStats({ ...dashboard.stats, unreadNotifications: unread });
     } catch (error) {
       console.error('Error loading dashboard:', error);
     } finally {
@@ -47,6 +84,22 @@ export default function DashboardScreen() {
   useEffect(() => {
     loadDashboard();
   }, []);
+
+  // Refrescar cuando la pantalla gana foco
+  useFocusEffect(
+    useCallback(() => {
+      loadDashboard();
+      // Polling cada 15s mientras la pantalla está enfocada
+      const id = setInterval(() => {
+        // Solo actualizar contador de notificaciones para no sobrecargar
+        notificationService
+          .list({ onlyUnread: true, limit: 1 })
+          .then((res) => setStats((prev) => ({ ...prev, unreadNotifications: res.unread || 0 })))
+          .catch(() => {});
+      }, 15000);
+      return () => clearInterval(id);
+    }, [])
+  );
 
   if (loading) {
     return (
@@ -69,8 +122,38 @@ export default function DashboardScreen() {
       }
     >
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>📊 Dashboard</Text>
-        <Text style={styles.headerSubtitle}>Panel de control</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <View>
+            <Text style={styles.headerTitle}>📊 Dashboard</Text>
+            <Text style={styles.headerSubtitle}>Panel de control</Text>
+          </View>
+          <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
+            <View style={{ paddingHorizontal: 6 }}>
+              <Text style={{ fontSize: 24 }}>🔔</Text>
+              {stats.unreadNotifications > 0 && (
+                <Animated.View
+                  style={{
+                    position: 'absolute',
+                    right: -2,
+                    top: -2,
+                    backgroundColor: '#D32F2F',
+                    borderRadius: 10,
+                    minWidth: 18,
+                    height: 18,
+                    paddingHorizontal: 4,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transform: [{ scale: badgeScale }],
+                  }}
+                >
+                  <Text style={{ color: '#fff', fontSize: 10, fontWeight: '700' }}>
+                    {stats.unreadNotifications > 99 ? '99+' : String(stats.unreadNotifications)}
+                  </Text>
+                </Animated.View>
+              )}
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.statsContainer}>
@@ -93,17 +176,48 @@ export default function DashboardScreen() {
           <Text style={styles.statNumber}>{formatPrice(stats.todayRevenue)}</Text>
           <Text style={styles.statLabel}>Ventas Hoy</Text>
         </View>
+
+        <View style={[styles.statCard, { backgroundColor: CONFIG.COLORS.secondary }]}>
+          <Text style={styles.statNumber}>{stats.unreadNotifications}</Text>
+          <Text style={styles.statLabel}>Notificaciones</Text>
+        </View>
+      </View>
+
+      {/* Preview de última notificación */}
+      <View style={{ paddingHorizontal: 15 }}>
+        <View style={{ backgroundColor: '#fff', borderRadius: 12, padding: 16, borderWidth: 1, borderColor: '#eee' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: CONFIG.COLORS.text }}>🔔 Notificaciones</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
+              <Text style={{ color: CONFIG.COLORS.primary, fontWeight: '700' }}>Ver todas</Text>
+            </TouchableOpacity>
+          </View>
+          {latestNotification ? (
+            <View style={{ marginTop: 8 }}>
+              <Text style={{ fontSize: 14, color: CONFIG.COLORS.text }}>{latestNotification.title}</Text>
+              <Text style={{ fontSize: 12, color: CONFIG.COLORS.textLight, marginTop: 2 }}>
+                {new Date(latestNotification.created_at).toLocaleString()}
+              </Text>
+            </View>
+          ) : (
+            <Text style={{ fontSize: 14, color: CONFIG.COLORS.textLight, marginTop: 8 }}>Sin notificaciones recientes</Text>
+          )}
+        </View>
       </View>
 
       <View style={styles.actionsContainer}>
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity style={styles.actionButton} onPress={() => navigation.navigate('ProductForm')}>
           <Text style={styles.actionIcon}>➕</Text>
           <Text style={styles.actionText}>Nuevo Producto</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity style={styles.actionButton} onPress={() => navigation.navigate('Orders')}>
           <Text style={styles.actionIcon}>📦</Text>
           <Text style={styles.actionText}>Ver Pedidos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.actionButton} onPress={() => navigation.navigate('Notifications')}>
+          <Text style={styles.actionIcon}>🔔</Text>
+          <Text style={styles.actionText}>Notificaciones</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

@@ -76,15 +76,28 @@ exports.getMyMerchant = async (req, res) => {
 // Actualizar mi comercio
 exports.updateMyMerchant = async (req, res) => {
   try {
-    const merchant = await Merchant.findByUserId(req.userId);
-    if (!merchant) {
-      return res.status(404).json({ error: 'No tienes un comercio registrado' });
-    }
+    let merchant = await Merchant.findByUserId(req.userId);
 
     const {
       business_name, business_type, description, business_hours,
       logo_image, banner_image
     } = req.body;
+
+    // Si no existe, crear un registro básico y luego actualizar
+    if (!merchant) {
+      const User = require('../models/User');
+      const user = await User.findById(req.userId);
+      const createdId = await Merchant.create({
+        user_id: req.userId,
+        business_name: req.body.business_name || (user?.full_name ? `Negocio de ${user.full_name}` : 'Mi Negocio'),
+        business_type: req.body.business_type || 'other',
+        description: req.body.description || '',
+        business_hours: req.body.business_hours || {},
+        logo_image: req.body.logo_image || null,
+        banner_image: req.body.banner_image || null,
+      });
+      merchant = await Merchant.findById(createdId);
+    }
 
     const updated = await Merchant.update(merchant.id, {
       business_name: business_name || merchant.business_name,
@@ -107,6 +120,49 @@ exports.updateMyMerchant = async (req, res) => {
   } catch (error) {
     console.error('Error al actualizar comercio:', error);
     res.status(500).json({ error: 'Error al actualizar comercio', details: error.message });
+  }
+};
+
+// Dashboard del comerciante
+exports.getMyDashboard = async (req, res) => {
+  try {
+    const Merchant = require('../models/Merchant');
+    const { pool } = require('../config/database');
+    const merchant = await Merchant.findByUserId(req.userId);
+    if (!merchant) {
+      return res.status(404).json({ error: 'No tienes un comercio registrado' });
+    }
+
+    const [[{ totalProducts }]] = await pool.query(
+      'SELECT COUNT(*) as totalProducts FROM products WHERE merchant_id = ?',[merchant.id]
+    );
+
+    const [[{ activeProducts }]] = await pool.query(
+      "SELECT COUNT(*) as activeProducts FROM products WHERE merchant_id = ? AND status = 'available' AND expiry_date >= CURDATE() AND quantity_available > 0",
+      [merchant.id]
+    );
+
+    const [[{ pendingOrders }]] = await pool.query(
+      "SELECT COUNT(*) as pendingOrders FROM orders WHERE merchant_id = ? AND status = 'pending'",
+      [merchant.id]
+    );
+
+    const [[{ todayRevenue }]] = await pool.query(
+      "SELECT IFNULL(SUM(total_amount),0) as todayRevenue FROM orders WHERE merchant_id = ? AND status = 'completed' AND DATE(created_at) = CURDATE()",
+      [merchant.id]
+    );
+
+    return res.json({
+      stats: {
+        totalProducts: Number(totalProducts) || 0,
+        activeProducts: Number(activeProducts) || 0,
+        pendingOrders: Number(pendingOrders) || 0,
+        todayRevenue: Number(todayRevenue) || 0,
+      },
+    });
+  } catch (error) {
+    console.error('Error al obtener dashboard:', error);
+    res.status(500).json({ error: 'Error al obtener dashboard', details: error.message });
   }
 };
 

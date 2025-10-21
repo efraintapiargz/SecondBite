@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { productService } from '../../services/productService';
 import { CONFIG } from '../../utils/config';
 import { Product } from '../../types';
@@ -32,6 +33,7 @@ export default function ProductFormScreen({ navigation, route }: Props) {
   const [quantity, setQuantity] = useState(editingProduct?.quantity_available?.toString() || '');
   const [expiryDate, setExpiryDate] = useState(editingProduct?.expiry_date?.split('T')[0] || '');
   const [imageUrl, setImageUrl] = useState(editingProduct?.image_url || '');
+  const [localImage, setLocalImage] = useState<string | null>(null);
 
   const categories = [
     { value: 'fruits', label: '🍎 Frutas' },
@@ -91,23 +93,51 @@ export default function ProductFormScreen({ navigation, route }: Props) {
 
     setLoading(true);
     try {
-      const productData = {
-        name: name.trim(),
-        description: description.trim(),
-        category,
-        original_price: originalPrice,
-        discounted_price: discountedPrice,
-        quantity_available: quantity,
-        expiry_date: expiryDate,
-        image_url: imageUrl.trim() || undefined,
-      };
+      // Si hay imagen local, enviamos multipart/form-data; si no, JSON normal
+      if (localImage) {
+        const form = new FormData();
+        form.append('name', name.trim());
+        form.append('description', description.trim());
+        form.append('category', category);
+        form.append('original_price', originalPrice);
+        form.append('discounted_price', discountedPrice);
+        form.append('quantity_available', quantity);
+        form.append('expiry_date', expiryDate);
 
-      if (isEditing) {
-        await productService.update(editingProduct.id, productData as any);
-        Alert.alert('Éxito', 'Producto actualizado correctamente');
+        const fileName = localImage.split('/').pop() || `image-${Date.now()}.jpg`;
+        const mime = fileName.endsWith('.png') ? 'image/png' : 'image/jpeg';
+        form.append('image', {
+          uri: localImage,
+          name: fileName,
+          type: mime,
+        } as any);
+
+        if (isEditing) {
+          await productService.updateMultipart(editingProduct.id, form);
+          Alert.alert('Éxito', 'Producto actualizado correctamente');
+        } else {
+          await productService.createMultipart(form);
+          Alert.alert('Éxito', 'Producto creado correctamente');
+        }
       } else {
-        await productService.create(productData as any);
-        Alert.alert('Éxito', 'Producto creado correctamente');
+        const productData = {
+          name: name.trim(),
+          description: description.trim(),
+          category,
+          original_price: originalPrice,
+          discounted_price: discountedPrice,
+          quantity_available: quantity,
+          expiry_date: expiryDate,
+          image_url: imageUrl.trim() || undefined,
+        };
+
+        if (isEditing) {
+          await productService.update(editingProduct.id, productData as any);
+          Alert.alert('Éxito', 'Producto actualizado correctamente');
+        } else {
+          await productService.create(productData as any);
+          Alert.alert('Éxito', 'Producto creado correctamente');
+        }
       }
 
       navigation.goBack();
@@ -118,6 +148,34 @@ export default function ProductFormScreen({ navigation, route }: Props) {
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const askForPermissions = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    const { status: libStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted' && libStatus !== 'granted') {
+      Alert.alert('Permisos', 'Se requieren permisos de cámara o galería para seleccionar imágenes');
+      return false;
+    }
+    return true;
+  };
+
+  const pickFromLibrary = async () => {
+    const granted = await askForPermissions();
+    if (!granted) return;
+    const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, quality: 0.8 });
+    if (!res.canceled && res.assets && res.assets[0]?.uri) {
+      setLocalImage(res.assets[0].uri);
+    }
+  };
+
+  const takePhoto = async () => {
+    const granted = await askForPermissions();
+    if (!granted) return;
+    const res = await ImagePicker.launchCameraAsync({ allowsEditing: true, quality: 0.8 });
+    if (!res.canceled && res.assets && res.assets[0]?.uri) {
+      setLocalImage(res.assets[0].uri);
     }
   };
 
@@ -253,17 +311,29 @@ export default function ProductFormScreen({ navigation, route }: Props) {
             💡 Formato de fecha: 2025-12-31 (Año-Mes-Día)
           </Text>
 
-          {/* URL de Imagen */}
+          {/* Imagen */}
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>URL de Imagen (opcional)</Text>
+            <Text style={styles.label}>Imagen del Producto</Text>
+            <View style={styles.row}>
+              <TouchableOpacity style={[styles.pickBtn, { flex: 1 }]} onPress={pickFromLibrary}>
+                <Text style={styles.pickBtnText}>📁 Galería</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.pickBtn, { flex: 1 }]} onPress={takePhoto}>
+                <Text style={styles.pickBtnText}>📷 Cámara</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={[styles.helperText, { marginTop: 8 }]}>O bien pega una URL:</Text>
             <TextInput
               style={styles.input}
               placeholder="https://ejemplo.com/imagen.jpg"
               value={imageUrl}
-              onChangeText={setImageUrl}
+              onChangeText={(t) => { setImageUrl(t); if (t) setLocalImage(null); }}
               keyboardType="url"
               autoCapitalize="none"
             />
+            {localImage ? (
+              <Text style={styles.helperText}>Imagen seleccionada localmente: {localImage.split('/').pop()}</Text>
+            ) : null}
           </View>
 
           {/* Botón de Guardar */}
@@ -385,5 +455,17 @@ const styles = StyleSheet.create({
     color: CONFIG.COLORS.white,
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  pickBtn: {
+    backgroundColor: CONFIG.COLORS.white,
+    borderWidth: 1,
+    borderColor: CONFIG.COLORS.border,
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  pickBtnText: {
+    color: CONFIG.COLORS.text,
+    fontWeight: '600',
   },
 });
