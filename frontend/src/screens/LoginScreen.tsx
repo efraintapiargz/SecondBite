@@ -8,6 +8,7 @@ import {
   Alert,
   ScrollView,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import CONFIG from '../utils/config';
@@ -46,8 +47,11 @@ export default function LoginScreen({ navigation }: any) {
         bounces={false}
       >
         <View style={styles.content}>
-          <Text style={styles.logo}>🍽️</Text>
-          <Text style={styles.title}>SecondBite</Text>
+          <Image 
+            source={require('../../assets/2BiteLogo.png')} 
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
           <Text style={styles.subtitle}>Reduciendo el desperdicio alimenticio</Text>
 
           <View style={styles.form}>
@@ -116,15 +120,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
-  logo: {
-    fontSize: 80,
+  logoImage: {
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 10,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
     color: CONFIG.COLORS.primary,
-    marginBottom: 10,
+  },
+  titleDark: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: CONFIG.COLORS.text,
   },
   subtitle: {
     fontSize: 16,

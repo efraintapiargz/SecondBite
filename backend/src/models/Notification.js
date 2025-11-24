@@ -15,7 +15,11 @@ class Notification {
     const params = [user_id];
     if (onlyUnread) query += ' AND is_read = FALSE';
     query += ' ORDER BY created_at DESC';
-    if (limit) { query += ' LIMIT ?'; params.push(parseInt(limit)); }
+    const parsedLimit = Number(limit);
+    if (Number.isFinite(parsedLimit) && parsedLimit > 0) {
+      query += ' LIMIT ?';
+      params.push(Math.floor(parsedLimit));
+    }
     const [rows] = await pool.execute(query, params);
     return rows;
   }

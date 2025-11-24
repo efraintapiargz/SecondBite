@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "init-db": "node database/init.js"
+    "init-db": "node database/init.js",
+    "seed:products": "node database/seed-products.js"
   },
   "keywords": [
     "food-waste",

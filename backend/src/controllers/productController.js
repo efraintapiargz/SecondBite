@@ -195,12 +195,34 @@ exports.deleteProduct = async (req, res) => {
       return res.status(403).json({ error: 'No tienes permiso para eliminar este producto' });
     }
 
-    const deleted = await Product.delete(req.params.id);
-    if (!deleted) {
-      return res.status(500).json({ error: 'Error al eliminar producto' });
+    try {
+      const deleted = await Product.delete(req.params.id);
+      if (!deleted) {
+        return res.status(500).json({ error: 'Error al eliminar producto' });
+      }
+      return res.json({ message: 'Producto eliminado exitosamente' });
+    } catch (dbErr) {
+      // Si no se puede eliminar por FK (pedido existente), hacer baja lógica
+      const code = dbErr?.code || dbErr?.errno;
+      const isFK = code === 'ER_ROW_IS_REFERENCED_2' || code === 1451;
+      if (isFK) {
+        try {
+          await Product.updateStatus(req.params.id, 'expired');
+          await Product.updateQuantity(req.params.id, 0);
+          const updatedProduct = await Product.findById(req.params.id);
+          return res.json({
+            message: 'El producto tiene pedidos asociados y no puede eliminarse. Se marcó como no disponible.',
+            product: updatedProduct,
+            softDeleted: true,
+          });
+        } catch (softErr) {
+          console.error('Error en baja lógica tras FK:', softErr);
+          return res.status(500).json({ error: 'No se pudo desactivar el producto', details: softErr.message });
+        }
+      }
+      console.error('Error al eliminar producto (DB):', dbErr);
+      return res.status(500).json({ error: 'Error al eliminar producto', details: dbErr.message });
     }
-
-    res.json({ message: 'Producto eliminado exitosamente' });
   } catch (error) {
     console.error('Error al eliminar producto:', error);
     res.status(500).json({ error: 'Error al eliminar producto', details: error.message });

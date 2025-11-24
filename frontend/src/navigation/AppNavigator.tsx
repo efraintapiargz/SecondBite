@@ -35,8 +35,8 @@ function ConsumerTabs() {
   return (
     <ConsumerTab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: '#2E7D32',
-        tabBarInactiveTintColor: '#9E9E9E',
+        tabBarActiveTintColor: CONFIG.COLORS.primary,
+        tabBarInactiveTintColor: CONFIG.COLORS.textLight,
         tabBarStyle: {
           height: 60,
           paddingBottom: 8,
@@ -89,8 +89,8 @@ function MerchantTabs() {
   return (
     <MerchantTab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: '#2E7D32',
-        tabBarInactiveTintColor: '#9E9E9E',
+        tabBarActiveTintColor: CONFIG.COLORS.primary,
+        tabBarInactiveTintColor: CONFIG.COLORS.textLight,
         tabBarStyle: {
           height: 60,
           paddingBottom: 8,

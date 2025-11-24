@@ -72,8 +72,8 @@ export default function ProductsScreen({ navigation }: Props) {
           style: 'destructive',
           onPress: async () => {
             try {
-              await productService.delete(product.id);
-              Alert.alert('Éxito', 'Producto eliminado correctamente');
+              const res = await productService.delete(product.id);
+              Alert.alert('Éxito', res?.message || 'Producto eliminado correctamente');
               loadProducts();
             } catch (error: any) {
               Alert.alert('Error', error.response?.data?.error || 'Error al eliminar el producto');

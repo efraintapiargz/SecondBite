@@ -1,0 +1,7 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle dot (top right) -->
+  <circle cx="425" cy="293" r="45" fill="#F39C12"/>
+  
+  <!-- Main "2" shape -->
+  <path d="M 15 260 Q 15 160 90 100 Q 165 40 240 100 Q 265 120 265 150 L 265 180 Q 265 210 245 230 L 120 355 Q 100 375 100 405 L 100 490 L 270 490 L 270 390 L 165 390 L 235 320 Q 295 260 295 180 L 295 150 Q 295 70 235 25 Q 175 -20 90 15 Q 15 45 15 130 L 15 260 Z" fill="#F39C12"/>
+</svg>

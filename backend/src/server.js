@@ -10,7 +10,7 @@ const orderRoutes = require('./routes/orders');
 const notificationRoutes = require('./routes/notifications');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+let PORT = parseInt(process.env.PORT, 10) || 3000;
 const path = require('path');
 const fs = require('fs');
 
@@ -86,6 +86,27 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Helper: intentar escuchar en puerto y reintentar si está ocupado
+const listenWithRetry = (port, retries = 5) => {
+  return new Promise((resolve, reject) => {
+    const server = app.listen(port, () => resolve({ server, port }));
+    server.on('error', async (err) => {
+      if (err && err.code === 'EADDRINUSE' && retries > 0) {
+        const nextPort = port + 1;
+        console.warn(`⚠️  Puerto ${port} en uso. Intentando con ${nextPort}...`);
+        try {
+          const result = await listenWithRetry(nextPort, retries - 1);
+          resolve(result);
+        } catch (e) {
+          reject(e);
+        }
+      } else {
+        reject(err);
+      }
+    });
+  });
+};
+
 // Iniciar servidor
 const startServer = async () => {
   try {
@@ -96,24 +117,24 @@ const startServer = async () => {
       console.error('   Verifica que MySQL esté ejecutándose y las credenciales sean correctas');
     }
 
-    app.listen(PORT, () => {
-      console.log('');
-      console.log('╔═══════════════════════════════════════════════════════════╗');
-      console.log('║                                                           ║');
-      console.log('║              🍽️  SecondBite API Server  🍽️               ║');
-      console.log('║                                                           ║');
-      console.log('╚═══════════════════════════════════════════════════════════╝');
-      console.log('');
-      console.log(`🚀 Servidor ejecutándose en: http://localhost:${PORT}`);
-      console.log(`📊 Health check: http://localhost:${PORT}/health`);
-      console.log(`🔐 Auth: http://localhost:${PORT}/api/auth`);
-      console.log(`🛒 Products: http://localhost:${PORT}/api/products`);
-      console.log(`🏪 Merchants: http://localhost:${PORT}/api/merchants`);
-      console.log(`📦 Orders: http://localhost:${PORT}/api/orders`);
-      console.log('');
-      console.log(`⚙️  Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log('');
-    });
+    const { port: boundPort } = await listenWithRetry(PORT, 10);
+    PORT = boundPort;
+    console.log('');
+    console.log('╔═══════════════════════════════════════════════════════════╗');
+    console.log('║                                                           ║');
+    console.log('║              🍽️  SecondBite API Server  🍽️               ║');
+    console.log('║                                                           ║');
+    console.log('╚═══════════════════════════════════════════════════════════╝');
+    console.log('');
+    console.log(`🚀 Servidor ejecutándose en: http://localhost:${PORT}`);
+    console.log(`📊 Health check: http://localhost:${PORT}/health`);
+    console.log(`🔐 Auth: http://localhost:${PORT}/api/auth`);
+    console.log(`🛒 Products: http://localhost:${PORT}/api/products`);
+    console.log(`🏪 Merchants: http://localhost:${PORT}/api/merchants`);
+    console.log(`📦 Orders: http://localhost:${PORT}/api/orders`);
+    console.log('');
+    console.log(`⚙️  Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log('');
   } catch (error) {
     console.error('❌ Error al iniciar el servidor:', error);
     process.exit(1);

@@ -5,10 +5,10 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "primaryColor": "#4CAF50",
+    "primaryColor": "#F39C12",
     "splash": {
       "resizeMode": "contain",
-      "backgroundColor": "#4CAF50"
+      "backgroundColor": "#F39C12"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#4CAF50"
+        "backgroundColor": "#F39C12"
       },
       "package": "com.secondbite.app",
       "permissions": [

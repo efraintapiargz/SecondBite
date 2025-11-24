@@ -136,7 +136,7 @@ export default function DashboardScreen({ navigation }: Props) {
                     position: 'absolute',
                     right: -2,
                     top: -2,
-                    backgroundColor: '#D32F2F',
+                    backgroundColor: CONFIG.COLORS.danger,
                     borderRadius: 10,
                     minWidth: 18,
                     height: 18,

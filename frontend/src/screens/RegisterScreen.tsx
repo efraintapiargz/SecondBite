@@ -8,6 +8,7 @@ import {
   Alert,
   ScrollView,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { CONFIG } from '../utils/config';
@@ -75,8 +76,11 @@ export default function RegisterScreen({ navigation }: any) {
         scrollEnabled={true}
       >
         <View style={styles.content}>
-          <Text style={styles.logo}>🍽️</Text>
-          <Text style={styles.title}>SecondBite</Text>
+          <Image 
+            source={require('../../assets/2BiteLogo.png')} 
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
           <Text style={styles.subtitle}>Crear cuenta nueva</Text>
 
           {/* Campo Nombre Completo */}
@@ -230,18 +234,28 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
   },
-  logo: {
-    fontSize: 60,
-    textAlign: 'center',
+  logoImage: {
+    width: 150,
+    height: 150,
     marginBottom: 10,
     marginTop: 20,
+    alignSelf: 'center',
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 5,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    textAlign: 'center',
     color: CONFIG.COLORS.primary,
-    marginBottom: 5,
+  },
+  titleDark: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: CONFIG.COLORS.text,
   },
   subtitle: {
     fontSize: 16,
